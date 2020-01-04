@@ -45,6 +45,7 @@ def password_find_back_api(request):
 
 # 同步记录API接口
 def records_sync_api(request):
+    print(123)
     pass
 
 #https://github.com/TodoListIOS/TodoList_web
