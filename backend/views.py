@@ -1,3 +1,4 @@
+from django.core import serializers
 from django.shortcuts import render
 import json
 from django.http import HttpResponse
@@ -53,10 +54,10 @@ def json_transfer(request):
     if request.method == "GET":
         try:
             users = models.Account.objects.all()
-            user_list = list(users)
+            user_list = serializers.serialize("json", users)
             response = json.dumps(user_list, ensure_ascii=False)
-            # print(response)
-            return HttpResponse(response)
+            print(user_list)
+            return HttpResponse(user_list)
             # back_list = []
             # user_data = {'name': user.Name, 'email': user.Email, 'password': user.Password}
             # back_list.append(user_data)
