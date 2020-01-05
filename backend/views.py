@@ -47,3 +47,19 @@ def password_find_back_api(request):
 def records_sync_api(request):
     pass
 
+
+# 连接测试API接口
+def json_transfer(request):
+    if request.method == "GET":
+        try:
+            users = models.Account.objects.all()
+            user_list = list(users)
+            response = json.dumps(user_list, ensure_ascii=False)
+            # print(response)
+            return HttpResponse(response)
+            # back_list = []
+            # user_data = {'name': user.Name, 'email': user.Email, 'password': user.Password}
+            # back_list.append(user_data)
+            # response = json.dumps(back_list, ensure_ascii=False)
+        except ObjectDoesNotExist:
+            return HttpResponse("None")
