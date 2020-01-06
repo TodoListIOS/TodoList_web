@@ -78,6 +78,15 @@ def homepage(request):
         return render(request, 'homepage.html', locals())
 
 
+# 网页登出
+def web_logout(request):
+    if not request.session.get('is_login', None):  # 原本未登录则无登出
+        return redirect("web_login")
+    request.session.flush()
+
+    return redirect("web_login")
+
+
 # 登陆认证API接口
 def login_api(request):
     if request.method == 'POST':
