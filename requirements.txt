@@ -1,7 +1,8 @@
-captcha
 certifi==2019.11.28
 cycler==0.10.0
 Django==2.2.5
+django-ranged-response==0.2.0
+django-simple-captcha==0.5.12
 kiwisolver==1.1.0
 matplotlib==3.0.3
 mkl-fft==1.0.15
