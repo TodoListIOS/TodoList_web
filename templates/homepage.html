@@ -1,0 +1,42 @@
+{% extends 'base_for_login.html' %}
+
+{% block title %}
+    主页
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2">
+                <a href="#" class="list-group-item active">功能</a>
+                <a href="{% url 'web_login' %}" class="list-group-item">
+                    <img src='/media/web_img/start.png' style="margin-right:15px; width:20px ">今日事程</a>
+                <a href="{% url 'web_login' %}" class="list-group-item">
+                    <img src="/media/web_img/personal1.png" style="margin-right:15px; width:20px ">个人信息</a>
+                <a href="{% url 'web_login' %}" class="list-group-item">
+                    <img src="/media/web_img/change2.png" style="margin-right:15px; width:20px ">修改信息</a>
+                <a href="{% url 'web_login' %}" class="list-group-item">
+                    <img src="/media/web_img/feedback.png" style="margin-right:15px; width:20px ">邮件反馈</a>
+
+
+            </div>
+            <div class="col-sm-10">
+                {% if message %}
+                    <div class="alert alert-info alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                            <span aria-disabled="true">×</span>
+                        </button>
+                        <strong>
+                            {{ message }}
+                        </strong>
+                    </div>
+                {% endif %}
+
+                <div>
+                    <h2 class="text-center" style="">今日代办</h2>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

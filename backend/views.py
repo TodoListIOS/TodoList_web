@@ -4,7 +4,7 @@ import json
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 
-from backend import models,forms
+from backend import models, forms
 
 
 # 网页登录页面
@@ -13,19 +13,18 @@ def web_login(request):
         return redirect('homepage')
 
     if request.method == "POST":
-        login_form = forms.UserForm(request.POST)
+        login_form = forms.LoginForm(request.POST)
         message = "请检查填写的内容！(验证码)"
-        print(123)
         if login_form.is_valid():
             email = login_form.cleaned_data['email']
             password = login_form.cleaned_data['password']
-            users = models.Account.objects.filter(email=email)
+            users = models.Account.objects.filter(Email=email)
             if users.count() != 0:
                 user = users.first()
-                if user.password == password:
+                if user.Password == password:
                     request.session['is_login'] = True
-                    request.session['user_email'] = user.email
-                    request.session['user_name'] = user.name
+                    request.session['user_email'] = user.Email
+                    request.session['user_name'] = user.Name
 
                     return redirect('homepage')
                 else:
@@ -35,8 +34,48 @@ def web_login(request):
                 return render(request, 'login.html', locals())
         return render(request, 'login.html', locals())
 
-    login_form = forms.UserForm()
+    login_form = forms.LoginForm()
     return render(request, 'login.html', locals())
+
+
+# 网页注册页面
+def web_register(request):
+    if request.session.get('is_login', None):
+        return redirect("homepage")
+    if request.method == "POST":
+        register_form = forms.RegisterForm(request.POST)
+        message = "请检查填写的内容！(验证码)"
+        if register_form.is_valid():  # 获取数据
+            username = register_form.cleaned_data['username']
+            password1 = register_form.cleaned_data['password1']
+            password2 = register_form.cleaned_data['password2']
+            email = register_form.cleaned_data['email']
+            print(email)
+            if password1 != password2:  # 判断两次密码是否相同
+                message = "两次输入的密码不同！"
+                return render(request, 'register.html', locals())
+            else:
+                same_email_user = models.Account.objects.filter(Email=email)
+                if same_email_user:  # 邮箱地址唯一
+                    message = '该邮箱已被注册！'
+                    return render(request, 'register.html', locals())
+                # 当一切都OK的情况下，创建新用户
+
+                new_user = models.Account(Name=username, Password=password1, Email=email)
+                new_user.save()
+                return redirect('web_login')  # 自动跳转到登录页面
+    register_form = forms.RegisterForm()
+    return render(request, 'register.html', locals())
+
+
+# 网页主页
+def homepage(request):
+    if not request.session.get('is_login', None):
+        return redirect('web_login')
+
+    if request.method == "GET":
+        # announcement = models.Announcement.objects.filter(visible=True)
+        return render(request, 'homepage.html', locals())
 
 
 # 登陆认证API接口

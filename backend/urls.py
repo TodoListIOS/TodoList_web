@@ -19,8 +19,10 @@ from backend import views
 
 urlpatterns = [
     path('', views.web_login, name='web_login'),
+    path('web_register', views.web_register, name='web_register'),
     path('login_api/', views.login_api, name='login_api'),
     path('register_api/', views.register_api, name='register_api'),
     path('password_find_back_api/', views.password_find_back_api, name='password_find_back_api'),
     path('json_transfer/', views.json_transfer, name='json_transfer'),
+    path('homepage/', views.homepage, name='homepage'),
 ]
