@@ -26,4 +26,5 @@ urlpatterns = [
     path('password_find_back_api/', views.password_find_back_api, name='password_find_back_api'),
     path('json_transfer/', views.json_transfer, name='json_transfer'),
     path('homepage/', views.homepage, name='homepage'),
+    path('web_feed_back/', views.web_feed_back, name='web_feed_back'),
 ]

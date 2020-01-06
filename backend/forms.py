@@ -21,3 +21,9 @@ class RegisterForm(forms.Form):
     password2 = forms.CharField(label="Confine Password:", max_length=256,
                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     captcha = CaptchaField(label='Captcha  ')
+
+
+class FeedBack(forms.Form):
+    text = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'style': 'height: 120px;width:100%'}))

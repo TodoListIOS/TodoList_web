@@ -6,6 +6,10 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from backend import models, forms
 
+from django.utils.http import urlquote
+from django.core.mail import send_mail, send_mass_mail, EmailMultiAlternatives
+import random
+
 
 # 网页登录页面
 def web_login(request):
@@ -87,6 +91,38 @@ def web_logout(request):
     return redirect("web_login")
 
 
+# 密码找回
+def web_password_find_back(request):
+    pass
+    # if request.session.get('is_login', None):
+    #     return redirect('homepage')
+    #
+    # if request.method == "POST":
+    #     login_form = forms.LoginForm(request.POST)
+    #     message = "请检查填写的内容！(验证码)"
+    #     if login_form.is_valid():
+    #         email = login_form.cleaned_data['email']
+    #         password = login_form.cleaned_data['password']
+    #         users = models.Account.objects.filter(Email=email)
+    #         if users.count() != 0:
+    #             user = users.first()
+    #             if user.Password == password:
+    #                 request.session['is_login'] = True
+    #                 request.session['user_email'] = user.Email
+    #                 request.session['user_name'] = user.Name
+    #
+    #                 return redirect('homepage')
+    #             else:
+    #                 message = "用户名或密码错误"
+    #         else:
+    #             message = "用户不存在，请先注册"
+    #             return render(request, 'login.html', locals())
+    #     return render(request, 'login.html', locals())
+
+    login_form = forms.LoginForm()
+    return render(request, 'login.html', locals())
+
+
 # 登陆认证API接口
 def login_api(request):
     if request.method == 'POST':
@@ -121,7 +157,21 @@ def register_api(request):
 
 # 密码找回API接口
 def password_find_back_api(request):
-    pass
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        # 值1：  邮件标题   值2： 邮件主体
+        # 值3： 发件人      值4： 收件人
+        emaillist = [email]
+        code = random.randint(1000, 9999)
+        text = "您的验证码为：" + str(code)
+        res = send_mail('验证码',
+                        text,
+                        'buct_dongwu@163.com',
+                        emaillist)
+        if res == 1:
+            return HttpResponse('processed')
+        else:
+            return HttpResponse('Error')
 
 
 # 同步记录API接口
@@ -144,3 +194,35 @@ def json_transfer(request):
             # response = json.dumps(back_list, ensure_ascii=False)
         except ObjectDoesNotExist:
             return HttpResponse("None")
+
+
+def web_feed_back(request):
+    if request.method == "GET":
+        if not request.session.get('is_login', None):
+            return redirect('login')
+        user = models.Account.objects.get(Email=request.session.get('user_email', None))
+        fb = forms.FeedBack()
+        return render(request, 'feedback.html', locals())
+    else:
+        fb = forms.FeedBack(request.POST)
+        if fb.is_valid():
+            text = fb.cleaned_data['text']
+            # 值1：  邮件标题   值2： 邮件主体
+            # 值3： 发件人      值4： 收件人
+            user_name = request.session.get('user_name', None)
+            user_email = request.session.get('user_email', None)
+            foot = user_name + "\t" + user_email + "\t"
+            text = text + "\n" + foot
+            res = send_mail('反馈信息',
+                            text,
+                            'buct_dongwu@163.com',
+                            ['18811610600@163.com'])
+
+            if res == 1:
+                message = "提交成功！谢谢"
+                fb = forms.FeedBack()
+                return render(request, 'feedback.html', locals())
+            else:
+                message = "提交失败！反馈邮件程序错误"
+                fb = forms.FeedBack()
+                return render(request, 'feedback.html', locals())
