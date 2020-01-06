@@ -1,0 +1,284 @@
+<!doctype html>
+<html class="no-js h-100" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>{% block title %}Homepage{% endblock %}</title>
+
+    <meta name="description"
+          content="A high-quality &amp; free Bootstrap admin dashboard template pack that comes with lots of templates and components.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" id="main-stylesheet" data-version="1.1.0"
+          href="../static/twts_244_Shards-admin/twts_244_Shards-admin/styles/shards-dashboards.1.1.0.min.css">
+    <link rel="stylesheet" href="../static/twts_244_Shards-admin/twts_244_Shards-admin/styles/extras.1.1.0.min.css">
+    <link rel="shortcut icon" href="../static/baseline_apps_black_18dp.bmp">
+    <script async defer src="https://buttons.github.io/buttons.js">
+    </script>
+    <script src="../static/js/echarts.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+</head>
+<body class="h-100">
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main Sidebar -->
+        <aside class="main-sidebar col-12 col-md-3 col-lg-2 px-0">
+            <div class="main-navbar">
+                <nav class="navbar align-items-stretch navbar-light bg-white flex-md-nowrap border-bottom p-0">
+                    <a class="navbar-brand w-100 mr-0" style="line-height: 25px;" href="http://www.buct.edu.cn/"
+                       target="_blank">
+                        <div class="d-table m-auto">
+                            <img class="user-avatar rounded-circle mr-2"
+                                 src="../static/buct.jpg"
+                                 alt="User Avatar">
+                            <span class="d-none d-md-inline-block">BUCT_CS_2016</span>
+                        </div>
+                    </a>
+                    <a class="toggle-sidebar d-sm-inline d-md-none d-lg-none">
+                        <i class="material-icons">&#xE5C4;</i>
+                    </a>
+                </nav>
+            </div>
+            <form action="#" class="main-sidebar__search w-100 border-right d-sm-flex d-md-none d-lg-none">
+                <div class="input-group input-group-seamless ml-3">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                    <input class="navbar-search form-control" type="text" placeholder="Search for something..."
+                           aria-label="Search"></div>
+            </form>
+            <div class="nav-wrapper">
+                <ul class="nav flex-column ">
+                    <li class="nav-item dropdown ">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                           role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons">camera</i>
+                            <span>数字图像处理</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-small">
+                            <a class="dropdown-item "
+                               href="{% url 'front:reduce_fogy' %}">
+                                <i class="material-icons">wb_cloudy</i> 暗通道去雾</a>
+                            <a class="dropdown-item"
+                               href="{% url 'front:seam_carving' %}">
+                                <i class="material-icons">filter</i> SeamCarving</a>
+                            <a class="dropdown-item"
+                               href="{% url 'front:sift' %}">
+                                <i class="material-icons">grain</i> sift</a>
+                            <a class="dropdown-item"
+                               href="{% url 'front:filter' %}">
+                                <i class="material-icons">blur_on</i> 滤波</a>
+                            {#                            <a class="dropdown-item"#}
+                            {#                               href="{% url 'front:show' %}">#}
+                            {#                                <i class="material-icons">control_point</i> 均值滤波</a>#}
+                            {#                            <a class="dropdown-item"#}
+                            {#                               href="{% url 'front:show' %}">#}
+                            {#                                <i class="material-icons">crop_din</i> 方框滤波</a>#}
+                            {#                            <a class="dropdown-item"#}
+                            {#                               href="{% url 'front:show' %}">#}
+                            {#                                <i class="material-icons">iso</i> 图像缩放</a>#}
+                            {#                            <a class="dropdown-item"#}
+                            {#                               href="{% url 'front:show' %}">#}
+                            {#                                <i class="material-icons">flip</i> 图像翻转</a>#}
+                            <div class="dropdown-divider"></div>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                           role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons">language</i>
+                            <span>人工智能学习</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-small">
+                            <a class="dropdown-item"
+                               href="#">
+                                <i class="material-icons">school</i> 专家系统</a>
+                            <a class="dropdown-item"
+                               href="{% url 'front:route' %}">
+                                <i class="material-icons">arrow_forward</i> 八连通</a>
+                            <a class="dropdown-item"
+                               href="{% url 'front:BP' %}">
+                                <i class="material-icons">subdirectory_arrow_left</i> 反向传播</a>
+                            <div class="dropdown-divider"></div>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                           role="button" aria-haspopup="true" aria-expanded="true">
+                            <i class="material-icons">done</i>
+                            <span>Android project
+                                network access test</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-small">
+                            <a class="dropdown-item"
+                               href="{% url 'front:show_model' %}">
+                                <i class="material-icons">wb_cloudy</i> 跳转模板</a>
+                            <a class="dropdown-item"
+                               href="{% url 'front:show_pay_web' %}">
+                                <i class="material-icons">filter</i> show_all_details</a>
+                            <a class="dropdown-item"
+                               href="{% url 'front:add_pay_web' %}">
+                                <i class="material-icons">grain</i> android_test</a>
+                            <div class="dropdown-divider"></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <!-- End Main Sidebar -->
+        <main class="main-content col-lg-10 col-md-9 col-sm-12 p-0 offset-lg-2 offset-md-3 ">
+            <div class="main-navbar sticky-top bg-white">
+                <!-- Main Navbar -->
+                <nav class="navbar align-items-stretch navbar-light flex-md-nowrap p-0">
+                    <form action="#" class="main-navbar__search w-100 d-none d-md-flex d-lg-flex">
+                        <div class="input-group input-group-seamless ml-3">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                            </div>
+                            <input class="navbar-search form-control" type="text" placeholder="Search for something..."
+                                   aria-label="Search"></div>
+                    </form>
+                    <ul class="navbar-nav border-left flex-row ">
+                        <li class="nav-item border-right dropdown notifications">
+                            <a class="nav-link nav-link-icon text-center" href="{% url 'front:show' %}" role="button">
+                                <div class="nav-link-icon__wrapper">
+                                    <i class="material-icons">home</i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#"
+                               role="button" aria-haspopup="true" aria-expanded="false">
+                                <img class="user-avatar rounded-circle mr-2"
+                                     src="../static/twts_244_Shards-admin/twts_244_Shards-admin/images/avatars/images.jpg"
+                                     alt="User Avatar">
+                                <span class="d-none d-md-inline-block">cairui</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-small">
+                                <a class="dropdown-item"
+                                   href="../static/twts_244_Shards-admin/twts_244_Shards-admin/user-profile-lite.html">
+                                    <i class="material-icons">&#xE7FD;</i> Profile</a>
+                                <a class="dropdown-item"
+                                   href="../static/twts_244_Shards-admin/twts_244_Shards-admin/components-blog-posts.html">
+                                    <i class="material-icons">vertical_split</i> Blog Posts</a>
+                                <a class="dropdown-item"
+                                   href="../static/twts_244_Shards-admin/twts_244_Shards-admin/add-new-post.html">
+                                    <i class="material-icons">note_add</i> Add New Post</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-danger" href="#">
+                                    <i class="material-icons text-danger">&#xE879;</i> Logout </a>
+                            </div>
+                        </li>
+                    </ul>
+                    <nav class="nav">
+                        <a href="#"
+                           class="nav-link nav-link-icon toggle-sidebar d-md-inline d-lg-none text-center border-left"
+                           data-toggle="collapse" data-target=".header-navbar" aria-expanded="false"
+                           aria-controls="header-navbar">
+                            <i class="material-icons">&#xE5D2;</i>
+                        </a>
+                    </nav>
+                </nav>
+            </div>
+
+            <!-- / .main-navbar -->
+            {% block content %}
+
+                <div class="main-content-container container-fluid ">
+                    <!-- Page Header -->
+
+                    <div class="page-header row no-gutters">
+                        <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                            <span class="text-uppercase page-subtitle">Overview</span>
+                            <h3 class="page-title">Work Table</h3>
+                        </div>
+                    </div>
+                    <!-- End Page Header -->
+                    <!-- Default Light Table -->
+                    <div class="row">
+                        <div class="col">
+                            <div class="card card-small mb-4">
+                                <div class="card-header border-bottom">
+                                    <h6 class="m-0">List</h6>
+                                </div>
+                                <div class="card-body p-0 pb-3 text-center">
+                                    <table class="table mb-0">
+                                        <thead class="bg-light">
+                                        <tr>
+                                            <th scope="col" class="border-0">#</th>
+                                            <th scope="col" class="border-0">Name</th>
+                                            <th scope="col" class="border-0">State</th>
+                                            <th scope="col" class="border-0">Finished_time</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>暗通道先验去雾</td>
+                                            <td>Finished</td>
+                                            <td>2019/4/23</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>Seaming_carving</td>
+                                            <td>Finished</td>
+                                            <td>2019/5/4</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>sift</td>
+                                            <td>Finished</td>
+                                            <td>2019/5/6</td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td>滤波</td>
+                                            <td>Finished</td>
+                                            <td>2019/5/4</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td>BP反向传播</td>
+                                            <td>Finished</td>
+                                            <td>2019/5/20</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+
+            <footer class="main-footer d-flex p-2 px-3 bg-white border-top">
+            <span class="copyright ml-auto my-auto mr-2">Copyright © 2019
+                <a href="#" target="_blank">ruitsai</a> </span>
+            </footer>
+        </main>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script src="https://unpkg.com/shards-ui@latest/dist/js/shards.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sharrre/2.0.1/jquery.sharrre.min.js"></script>
+<script src="../static/twts_244_Shards-admin/twts_244_Shards-admin/scripts/extras.1.1.0.min.js"></script>
+<script src="../static/twts_244_Shards-admin/twts_244_Shards-admin/scripts/shards-dashboards.1.1.0.min.js"></script>
+<script src="../static/twts_244_Shards-admin/twts_244_Shards-admin/scripts/app/app-blog-overview.1.1.0.js"></script>
+</body>
+</html>

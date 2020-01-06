@@ -1,0 +1,80 @@
+{% extends 'index.html' %}
+{% block title %}BP算法{% endblock %}
+{% block content %}
+    {% if message %}
+        <div class="alert alert-primary alert-dismissible fade show mb-0" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <i class="fa fa-check mx-2"></i>
+            <strong>{{ message }}</strong>
+        </div>
+    {% endif %}
+
+    <div class="main-content-container container-fluid px-4">
+        <!-- Page Header -->
+        <div class="page-header row no-gutters py-4">
+            <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                <span class="text-uppercase page-subtitle">Overview</span>
+                <h3 class="page-title">{% block index %}添加消费{% endblock %}</h3>
+            </div>
+        </div>
+        <!-- End Page Header -->
+        <!-- Default Light Table -->
+        <div class="col-lg-9 mb-6 offset-lg-1">
+            <div class="card card-small mb-4">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item p-4">
+                        <div class="row">
+                            <div class="col-lg-12 mb-4 ">
+                                <strong class="text-muted d-block mb-2">Forms</strong>
+                                <form class='' action="{% url 'front:add_pay_web' %}" method="post">
+                                        {% csrf_token %}
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1">项目</span>
+                                            </div>
+                                            <input type="text" class="form-control" placeholder="items" name="items"
+                                                   aria-label="items" aria-describedby="basic-addon1"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1">花费</span>
+                                            </div>
+                                            <input type="text" class="form-control" placeholder="123" name="cost"
+                                                   aria-label="cost" aria-describedby="basic-addon1"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1">日期</span>
+                                            </div>
+                                            <input type="date" class="form-control" placeholder="" name="date"
+                                                   aria-label="cost" aria-describedby="basic-addon1"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1">隐私</span>
+                                            </div>
+                                            <select id="inputState" class="form-control" name="isPri">
+                                                <option selected>private</option>
+                                                <option>public</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <input type="submit" class="btn btn-pill btn-outline-primary"
+                                                        style="margin-top: auto">
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- End Default Light Table -->
+    </div>
+{% endblock %}

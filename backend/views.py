@@ -1,10 +1,42 @@
 from django.core import serializers
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import json
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 
-from backend import models
+from backend import models,forms
+
+
+# 网页登录页面
+def web_login(request):
+    if request.session.get('is_login', None):
+        return redirect('homepage')
+
+    if request.method == "POST":
+        login_form = forms.UserForm(request.POST)
+        message = "请检查填写的内容！(验证码)"
+        print(123)
+        if login_form.is_valid():
+            email = login_form.cleaned_data['email']
+            password = login_form.cleaned_data['password']
+            users = models.Account.objects.filter(email=email)
+            if users.count() != 0:
+                user = users.first()
+                if user.password == password:
+                    request.session['is_login'] = True
+                    request.session['user_email'] = user.email
+                    request.session['user_name'] = user.name
+
+                    return redirect('homepage')
+                else:
+                    message = "用户名或密码错误"
+            else:
+                message = "用户不存在，请先注册"
+                return render(request, 'login.html', locals())
+        return render(request, 'login.html', locals())
+
+    login_form = forms.UserForm()
+    return render(request, 'login.html', locals())
 
 
 # 登陆认证API接口

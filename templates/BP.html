@@ -1,0 +1,319 @@
+{% extends 'index.html' %}
+{% block title %}BP算法{% endblock %}
+{% block content %}
+    {% if message %}
+        <div class="alert alert-primary alert-dismissible fade show mb-0" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <i class="fa fa-check mx-2"></i>
+            <strong>{{ message }}</strong>
+        </div>
+    {% endif %}
+
+    <div class="main-content-container container-fluid px-4">
+        <!-- Page Header -->
+        <div class="page-header row no-gutters py-4">
+            <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                <span class="text-uppercase page-subtitle">Overview</span>
+                <h3 class="page-title">{% block index %}反向传播算法效果演示{% endblock %}</h3>
+            </div>
+        </div>
+        <!-- End Page Header -->
+        <!-- Default Light Table -->
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="card card-small mb-4">
+                    <div class="card-header border-bottom">
+                        <h6 class="m-0">{% block sim %}拟合图{% endblock %} 运行{{ time }}次</h6>
+                    </div>
+                    <div id="main" style="width: 100%;height:400px;margin-top: 10px"></div>
+                    <div id="main1" style="width: 100%;height:400px;margin-top: 10px"></div>
+                    <div id="main2" style="width: 100%;height:400px;margin-top: 10px"></div>
+                    <script type="text/javascript">
+                        // 基于准备好的dom，初始化echarts实例
+                        var myChart = echarts.init(document.getElementById('main'));
+                        var xAxisData = {{ input_data }};
+                        var data1 = {{ ideal_output }};
+                        var data2 = {{ out_list }};
+
+
+                        option = {
+                            title: {
+                                text: '拟合与实际比较{{ function }}'
+                            },
+                            legend: {
+                                data: ['理想', '输出'],
+                                align: 'left'
+                            },
+                            toolbox: {
+                                // y: 'bottom',
+                                feature: {
+                                    magicType: {
+                                        type: ['stack', 'tiled']
+                                    },
+                                    dataView: {},
+                                    saveAsImage: {
+                                        pixelRatio: 2
+                                    }
+                                }
+                            },
+                            tooltip: {},
+                            xAxis: {
+                                data: xAxisData,
+                                silent: false,
+                                splitLine: {
+                                    show: false
+                                }
+                            },
+                            yAxis: {},
+                            series: [{
+                                name: '理想',
+                                type: 'bar',
+                                data: data1,
+                                animationDelay: function (idx) {
+                                    return idx * 10;
+                                }
+                            }, {
+                                name: '输出',
+                                type: 'bar',
+                                data: data2,
+                                animationDelay: function (idx) {
+                                    return idx * 10 + 100;
+                                }
+                            }],
+                            animationEasing: 'elasticOut',
+                            animationDelayUpdate: function (idx) {
+                                return idx * 5;
+                            }
+                        };
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                    </script>
+                    <script type="text/javascript">
+                        // 基于准备好的dom，初始化echarts实例
+                        var myChart = echarts.init(document.getElementById('main1'));
+                        var date = {{ step_arr}};
+                        var data = {{ loss_arr }};
+
+                        option = {
+                            tooltip: {
+                                trigger: 'axis',
+                                position: function (pt) {
+                                    return [pt[0], '10%'];
+                                }
+                            },
+                            title: {
+                                left: 'center',
+                                text: '误差下降曲线',
+                            },
+                            toolbox: {
+                                feature: {
+                                    dataZoom: {
+                                        yAxisIndex: 'none'
+                                    },
+                                    restore: {},
+                                    saveAsImage: {}
+                                }
+                            },
+                            xAxis: {
+                                type: 'category',
+                                boundaryGap: false,
+                                data: date
+                            },
+                            yAxis: {
+                                type: 'value',
+                                boundaryGap: [0, '100%']
+                            },
+                            dataZoom: [{
+                                type: 'inside',
+                                start: 0,
+                                end: 100
+                            }, {
+                                start: 0,
+                                end: 10,
+                                handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                                handleSize: '80%',
+                                handleStyle: {
+                                    color: '#fff',
+                                    shadowBlur: 3,
+                                    shadowColor: 'rgba(0, 0, 0, 0.6)',
+                                    shadowOffsetX: 2,
+                                    shadowOffsetY: 2
+                                }
+                            }],
+                            series: [
+                                {
+                                    name: '误差下降曲线',
+                                    type: 'line',
+                                    smooth: true,
+                                    symbol: 'none',
+                                    sampling: 'average',
+                                    itemStyle: {
+                                        color: 'rgb(255, 70, 131)'
+                                    },
+                                    areaStyle: {
+                                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                            offset: 0,
+                                            color: 'rgb(255, 158, 68)'
+                                        }, {
+                                            offset: 1,
+                                            color: 'rgb(255, 70, 131)'
+                                        }])
+                                    },
+                                    data: data
+                                }
+                            ]
+                        };
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                    </script>
+                    <script type="text/javascript">
+                        // 基于准备好的dom，初始化echarts实例
+                        var myChart = echarts.init(document.getElementById('main2'));
+                        var xAxisData = {{ test_input_data }};
+                        var data1 = {{ test_ideal_output }};
+                        var data2 = {{ forword_out_list_test }};
+
+
+                        option = {
+                            title: {
+                                text: '泛化比较{{ function }}'
+                            },
+                            legend: {
+                                data: ['理想', '输出'],
+                                align: 'left'
+                            },
+                            toolbox: {
+                                // y: 'bottom',
+                                feature: {
+                                    magicType: {
+                                        type: ['stack', 'tiled']
+                                    },
+                                    dataView: {},
+                                    saveAsImage: {
+                                        pixelRatio: 2
+                                    }
+                                }
+                            },
+                            tooltip: {},
+                            xAxis: {
+                                data: xAxisData,
+                                silent: false,
+                                splitLine: {
+                                    show: false
+                                }
+                            },
+                            yAxis: {},
+                            series: [{
+                                name: '理想',
+                                type: 'bar',
+                                data: data1,
+                                animationDelay: function (idx) {
+                                    return idx * 10;
+                                }
+                            }, {
+                                name: '输出',
+                                type: 'bar',
+                                data: data2,
+                                animationDelay: function (idx) {
+                                    return idx * 10 + 100;
+                                }
+                            }],
+                            animationEasing: 'elasticOut',
+                            animationDelayUpdate: function (idx) {
+                                return idx * 5;
+                            }
+                        };
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                    </script>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card card-small mb-4 pt-3">
+                    <div class="card-header border-bottom text-center">
+                        <h4 class="mb-0">操作板</h4>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item px-4">
+                            <div class="progress-wrapper">
+                                {% block controlpanel %}
+                                    <form class='' action="{% url 'front:BP' %}" method="post"
+                                          enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="form-row">
+                                            <div class="form-group col-md-9">
+                                                <select id="inputState" class="form-control" name="function"
+                                                        style="margin-top: 10px">
+                                                    <option selected disabled>拟合图像对象选择</option>
+                                                    <option>y=5 * sinx + 5</option>
+                                                    <option>y=5 * cosx + 5</option>
+                                                    <option>y=5 * x + 25</option>
+                                                    <option>y=x^2</option>
+                                                </select>
+                                                <select id="inputState" class="form-control" name="loss"
+                                                        style="margin-top: 10px">
+                                                    <option selected disabled>退出误差</option>
+                                                    <option>0.1</option>
+                                                    <option>0.05</option>
+                                                    <option>0.01</option>
+                                                    <option>0.005</option>
+                                                </select>
+                                                <select id="inputState" class="form-control" name="h_l_c"
+                                                        style="margin-top: 10px">
+                                                    <option selected disabled>隐藏层数</option>
+                                                    <option>1</option>
+                                                    <option>2</option>
+                                                    <option>3</option>
+                                                    <option>4</option>
+                                                </select>
+                                                <select id="inputState" class="form-control" name="h_l_n"
+                                                        style="margin-top: 10px">
+                                                    <option selected disabled>隐藏层神经元数</option>
+                                                    <option>2</option>
+                                                    <option>3</option>
+                                                    <option>4</option>
+                                                    <option>5</option>
+                                                    <option>6</option>
+                                                    <option>7</option>
+                                                </select>
+                                                <select id="inputState" class="form-control" name="l_r"
+                                                        style="margin-top: 10px">
+                                                    <option selected disabled>学习率</option>
+                                                    <option>0.50</option>
+                                                    <option>0.30</option>
+                                                    <option>0.15</option>
+                                                    <option>0.10</option>
+                                                    <option>0.01</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-5">
+                                                <button type="submit" class="btn btn-pill btn-outline-primary"
+                                                        style="margin-top: auto"
+                                                        name="point">开始反向传播拟合
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                {% endblock %}
+                            </div>
+
+
+                        </li>
+                        <li class="list-group-item p-4">
+                            <strong class="text-muted d-block mb-2">Description:
+                                <p></p>
+                                <p>1.选择反向传播模拟对象 </p>
+                                <p>2.选择可接受误差率（影响计算时间）</p>
+                                <p>3.选择隐藏层数与隐藏层内神经元数量</p>
+                            </strong>
+                            <span></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- End Default Light Table -->
+    </div>
+{% endblock %}
