@@ -39,6 +39,9 @@ def web_login(request):
                 return render(request, 'login.html', locals())
         return render(request, 'login.html', locals())
 
+    if request.session.get('message', None):
+        message = request.session.get('message', None)
+        del request.session['message']
     login_form = forms.LoginForm()
     return render(request, 'login.html', locals())
 
@@ -68,6 +71,7 @@ def web_register(request):
                 new_user = models.Account(Name=username, Password=password1, Email=email)
                 new_user.save()
                 return redirect('web_login')  # 自动跳转到登录页面
+
     if request.session.get('message', None):
         message = request.session.get('message', None)
         del request.session['message']
@@ -120,7 +124,7 @@ def web_password_find_back(request):
                     res = send_mail('验证码',
                                     text,
                                     'buct_dongwu@163.com',
-                                    email)
+                                    [email])
                     if res == 1:
                         message = "密码找回验证码已发送至您的邮箱"
                         AuthCode = forms.AuthCode()
@@ -157,8 +161,8 @@ def web_password_find_back(request):
                         user.Password = newpwd1
                         user.save()
                         message = "密码找回成功！"
-                        login_form = forms.LoginForm()
-                        return render(request, 'login.html', locals())
+                        request.session['message'] = message
+                        return redirect('web_login')
 
     PwdBack = forms.PwdBack()
     return render(request, 'pwdback_email_input.html', locals())
