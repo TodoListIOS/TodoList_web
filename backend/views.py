@@ -183,9 +183,7 @@ def login_api(request):
             back_list = []
             user_data = {'name': user.Name, 'email': user.Email, 'password': user.Password}
             back_list.append(user_data)
-            print(back_list)
             response = json.dumps(back_list, ensure_ascii=False)
-            print(response)
             return HttpResponse(response)
         except ObjectDoesNotExist:
             return HttpResponse("Error")
@@ -199,9 +197,13 @@ def register_api(request):
         input_password = request.POST.get('password')
         try:
             models.Account.objects.create(Email=input_email, Name=input_name, Password=input_password)
-            return HttpResponse("Pass")
+            back_list = [{'state': "pass"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
         except ObjectDoesNotExist:
-            return HttpResponse("Error")
+            back_list = [{'state': "error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
 
 
 # 密码找回API接口
