@@ -12,7 +12,8 @@
                 background-size:100% 100%;
                 background-attachment: fixed;">
     <div class="container">
-        <div class="col-md-4 col-md-offset-4">
+        <div class="col-md-4 col-md-offset-4"
+             style="background-color: #ffffff;padding: 20px;margin-top: 7%;border-radius: 5%">
             <form class='form-login' action="" method="post">
 
                 {% if message %}
@@ -27,11 +28,11 @@
                 {% endif %}
 
                 {% csrf_token %}
-                <h2 class="text-center" style="margin-top: 30px;color: #0a0c0d">请输入发送至您注册邮箱中的验证码</h2>
+                <h4 class="text-center" style="margin-top: 10px;color: #0a0c0d">请查看注册邮箱中的验证码</h4>
 
                 <div class="form-group" style=" max-width: 375px;padding: 15px;
                                       margin: 0 auto;">
-                    <h3 class="text-center" style="margin-top: 30px;color: #0a0c0d">{{ email }}</h3>
+                    <h5 class="text" style="margin-top: 10px;color: #0a0c0d">用户邮箱：{{ email }}</h5>
                 </div>
                 <div class="form-group" style=" max-width: 375px;padding: 15px;
                                       margin: 0 auto;">
@@ -62,7 +63,8 @@
                     <button type="reset" class="btn btn-default pull-left" href="{% url 'web_password_find_back' %}">
                         重发
                     </button>
-                    <button type="submit" class="btn btn-primary pull-right" name="input_code" value={{ email }}>确认</button>
+                    <button type="submit" class="btn btn-primary pull-right" name="input_code" value={{ email }}>确认
+                    </button>
                 </div>
             </form>
         </div>
