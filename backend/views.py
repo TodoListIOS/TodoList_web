@@ -190,6 +190,7 @@ def login_api(request):
 
 
 # 注册API接口
+@csrf_exempt
 def register_api(request):
     if request.method == 'POST':
         input_email = request.POST.get('email')
