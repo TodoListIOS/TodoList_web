@@ -196,9 +196,13 @@ def register_api(request):
         input_email = request.POST.get('email')
         input_name = request.POST.get('name')
         input_password = request.POST.get('password')
+        print(input_email)
+        print(input_name)
+        print(input_password)
         try:
             models.Account.objects.create(Email=input_email, Name=input_name, Password=input_password)
             back_list = [{'state': "pass"}]
+            print(123)
             response = json.dumps(back_list, ensure_ascii=False)
             return HttpResponse(response)
         except ObjectDoesNotExist:
