@@ -200,11 +200,16 @@ def register_api(request):
         print(input_name)
         print(input_password)
         try:
-            models.Account.objects.create(Email=input_email, Name=input_name, Password=input_password)
-            back_list = [{'state': "pass"}]
-            print(123)
-            response = json.dumps(back_list, ensure_ascii=False)
-            return HttpResponse(response)
+            user = models.Account.objects.get(Email=input_email)
+            if user:
+                back_list = [{'state': "Email is already sign up"}]
+                response = json.dumps(back_list, ensure_ascii=False)
+                return HttpResponse(response)
+            else:
+                models.Account.objects.create(Email=input_email, Name=input_name, Password=input_password)
+                back_list = [{'state': "pass"}]
+                response = json.dumps(back_list, ensure_ascii=False)
+                return HttpResponse(response)
         except ObjectDoesNotExist:
             back_list = [{'state': "error"}]
             response = json.dumps(back_list, ensure_ascii=False)
