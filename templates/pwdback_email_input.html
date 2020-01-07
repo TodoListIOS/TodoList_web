@@ -1,6 +1,6 @@
 {% extends 'base_for_login.html' %}
 {% load staticfiles %}
-{% block title %}登录{% endblock %}
+{% block title %}Password Find Back{% endblock %}
 {% block css %}
     {#    <link rel="stylesheet" href="{% static 'my_css/login.css' %}">#}
 {% endblock %}
@@ -27,21 +27,14 @@
                 {% endif %}
 
                 {% csrf_token %}
-                <h2 class="text-center" style="margin-top: 30px;color: #0a0c0d">欢迎来到随想</h2>
-
+                <h2 class="text-center" style="margin-top: 30px;color: #0a0c0d">请输入您绑定的邮箱</h2>
+                <h3 class="text-center" style="margin-top: 30px;color: #0a0c0d">将把找回验证码发送到您的邮箱</h3>
                 <div class="form-group" style=" max-width: 375px;padding: 15px;
                                       margin: 0 auto;">
-                    {{ login_form.email.label_tag }}
-                    {{ login_form.email }}
+                    {{ PwdBack.email.label_tag }}
+                    {{ PwdBack.email }}
                 </div>
-
-                <div class="form-group" style=" max-width: 375px;padding: 15px;
-                                      margin: 0 auto;">
-                    {{ login_form.password.label_tag }}
-                    {{ login_form.password }}
-                </div>
-
-                <div class="form-group" style=" max-width: 375px;padding: 15px;
+                <div class="form-group" style=" max-width: 400px;padding: 15px;
                                       margin: 0 auto;">
 
                     {% if login_form.captcha.errors %}
@@ -52,18 +45,10 @@
                 </div>
                 <div class="" style=" max-width: 375px;padding: 15px;
                                       margin: 0 auto;">
-                    <button type="reset" class="btn btn-default pull-left" href="{% url 'web_login' %}">页面重置</button>
-                    {#                    <a href="{% url 'web_login' %}">主页</a>#}
-                    {#                    <a href="{% url 'web_password_find_back' %}">#}
-                    {#                        <button class="btn btn-link pull-left">#}
-                    {#                            密码找回#}
-                    {#                        </button>#}
-                    {#                    </a>#}
-                    <button onclick="location.href='{% url 'web_password_find_back' %}'" type="button"
-                            class="btn btn-link pull-left">
-                        密码找回
+                    <button type="reset" class="btn btn-default pull-left" href="{% url 'web_password_find_back' %}">
+                        重置
                     </button>
-                    <button type="submit" class="btn btn-primary pull-right">登录</button>
+                    <button type="submit" class="btn btn-primary pull-right" name="send_code">发送</button>
                 </div>
             </form>
         </div>

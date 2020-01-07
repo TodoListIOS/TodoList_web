@@ -18,6 +18,7 @@ def web_login(request):
 
     if request.method == "POST":
         login_form = forms.LoginForm(request.POST)
+
         message = "请检查填写的内容！(验证码)"
         if login_form.is_valid():
             email = login_form.cleaned_data['email']
@@ -54,7 +55,6 @@ def web_register(request):
             password1 = register_form.cleaned_data['password1']
             password2 = register_form.cleaned_data['password2']
             email = register_form.cleaned_data['email']
-            print(email)
             if password1 != password2:  # 判断两次密码是否相同
                 message = "两次输入的密码不同！"
                 return render(request, 'register.html', locals())
@@ -68,6 +68,9 @@ def web_register(request):
                 new_user = models.Account(Name=username, Password=password1, Email=email)
                 new_user.save()
                 return redirect('web_login')  # 自动跳转到登录页面
+    if request.session.get('message', None):
+        message = request.session.get('message', None)
+        del request.session['message']
     register_form = forms.RegisterForm()
     return render(request, 'register.html', locals())
 
@@ -93,34 +96,72 @@ def web_logout(request):
 
 # 密码找回
 def web_password_find_back(request):
-    pass
-    # if request.session.get('is_login', None):
-    #     return redirect('homepage')
-    #
-    # if request.method == "POST":
-    #     login_form = forms.LoginForm(request.POST)
-    #     message = "请检查填写的内容！(验证码)"
-    #     if login_form.is_valid():
-    #         email = login_form.cleaned_data['email']
-    #         password = login_form.cleaned_data['password']
-    #         users = models.Account.objects.filter(Email=email)
-    #         if users.count() != 0:
-    #             user = users.first()
-    #             if user.Password == password:
-    #                 request.session['is_login'] = True
-    #                 request.session['user_email'] = user.Email
-    #                 request.session['user_name'] = user.Name
-    #
-    #                 return redirect('homepage')
-    #             else:
-    #                 message = "用户名或密码错误"
-    #         else:
-    #             message = "用户不存在，请先注册"
-    #             return render(request, 'login.html', locals())
-    #     return render(request, 'login.html', locals())
+    if request.session.get('is_login', None):
+        return redirect('homepage')
 
-    login_form = forms.LoginForm()
-    return render(request, 'login.html', locals())
+    if request.method == "POST":
+        if "send_code" in request.POST:
+            PwdBack = forms.PwdBack(request.POST)
+            if PwdBack.is_valid():
+                email = PwdBack.cleaned_data['email']
+                users = models.Account.objects.filter(Email=email)
+                if users.count() != 0:
+                    user = users.first()
+                    code = random.randint(1000, 9999)
+                    try:
+                        user = models.Account.objects.get(Email=email)
+                        user.Auth_code = code
+                        user.save()
+                    except ObjectDoesNotExist:
+                        message = "Ops,Something wrong! try again pls!"
+                        PwdBack = forms.PwdBack()
+                        return render(request, 'pwdback_email_input.html', locals())
+                    text = "您的密码找回验证码为：" + str(code)
+                    res = send_mail('验证码',
+                                    text,
+                                    'buct_dongwu@163.com',
+                                    email)
+                    if res == 1:
+                        message = "密码找回验证码已发送至您的邮箱"
+                        AuthCode = forms.AuthCode()
+                        return render(request, 'pwdback_email_authcode.html', locals())
+                    else:
+                        message = "Ops,Something wrong! try again pls!"
+                        PwdBack = forms.PwdBack()
+                        return render(request, 'pwdback_email_input.html', locals())
+                else:
+                    message = "用户不存在，请先注册!"
+                    request.session['message'] = message
+                    return redirect('web_register')
+            message = "input error"
+            PwdBack = forms.PwdBack()
+            return render(request, 'pwdback_email_input.html', locals())
+        elif "input_code" in request.POST:
+            AuthCode = forms.AuthCode(request.POST)
+            if AuthCode.is_valid():
+                email = request.POST["input_code"]
+                input_AuthCode = AuthCode.cleaned_data['AuthCode']
+                newpwd1 = AuthCode.cleaned_data['password1']
+                newpwd2 = AuthCode.cleaned_data['password2']
+                if newpwd1 != newpwd2:  # 判断两次密码是否相同
+                    message = "两次输入的密码不同！"
+                    AuthCode = forms.AuthCode()
+                    return render(request, 'pwdback_email_authcode.html', locals())
+                else:
+                    user = models.Account.objects.get(Email=email)
+                    if user.Auth_code != input_AuthCode:
+                        message = "验证码错误！"
+                        AuthCode = forms.AuthCode()
+                        return render(request, 'pwdback_email_authcode.html', locals())
+                    else:
+                        user.Password = newpwd1
+                        user.save()
+                        message = "密码找回成功！"
+                        login_form = forms.LoginForm()
+                        return render(request, 'login.html', locals())
+
+    PwdBack = forms.PwdBack()
+    return render(request, 'pwdback_email_input.html', locals())
 
 
 # 登陆认证API接口
@@ -133,11 +174,11 @@ def login_api(request):
         print(input_password)
         try:
             user = models.Account.objects.get(Email=input_email, Password=input_password)
-            # back_list = []
-            # user_data = {'name': user.Name, 'email': user.Email, 'password': user.Password}
-            # back_list.append(user_data)
-            # response = json.dumps(back_list, ensure_ascii=False)
-            return HttpResponse("Pass")
+            back_list = []
+            user_data = {'name': user.Name, 'email': user.Email, 'password': user.Password}
+            back_list.append(user_data)
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
         except ObjectDoesNotExist:
             return HttpResponse("Error")
 
@@ -163,7 +204,7 @@ def password_find_back_api(request):
         # 值3： 发件人      值4： 收件人
         emaillist = [email]
         code = random.randint(1000, 9999)
-        text = "您的验证码为：" + str(code)
+        text = "您的密码找回验证码为：" + str(code)
         res = send_mail('验证码',
                         text,
                         'buct_dongwu@163.com',
@@ -207,8 +248,7 @@ def web_feed_back(request):
         fb = forms.FeedBack(request.POST)
         if fb.is_valid():
             text = fb.cleaned_data['text']
-            # 值1：  邮件标题   值2： 邮件主体
-            # 值3： 发件人      值4： 收件人
+            # 值1:邮件标题 值2：邮件主体 值3:发件人 值4：收件人
             user_name = request.session.get('user_name', None)
             user_email = request.session.get('user_email', None)
             foot = user_name + "\t" + user_email + "\t"

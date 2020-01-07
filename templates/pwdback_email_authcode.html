@@ -1,6 +1,6 @@
 {% extends 'base_for_login.html' %}
 {% load staticfiles %}
-{% block title %}登录{% endblock %}
+{% block title %}Password Find Back{% endblock %}
 {% block css %}
     {#    <link rel="stylesheet" href="{% static 'my_css/login.css' %}">#}
 {% endblock %}
@@ -27,21 +27,28 @@
                 {% endif %}
 
                 {% csrf_token %}
-                <h2 class="text-center" style="margin-top: 30px;color: #0a0c0d">欢迎来到随想</h2>
+                <h2 class="text-center" style="margin-top: 30px;color: #0a0c0d">请输入发送至您注册邮箱中的验证码</h2>
 
                 <div class="form-group" style=" max-width: 375px;padding: 15px;
                                       margin: 0 auto;">
-                    {{ login_form.email.label_tag }}
-                    {{ login_form.email }}
+                    <h3 class="text-center" style="margin-top: 30px;color: #0a0c0d">{{ email }}</h3>
                 </div>
-
                 <div class="form-group" style=" max-width: 375px;padding: 15px;
                                       margin: 0 auto;">
-                    {{ login_form.password.label_tag }}
-                    {{ login_form.password }}
+                    {{ AuthCode.AuthCode.label_tag }}
+                    {{ AuthCode.AuthCode }}
                 </div>
-
                 <div class="form-group" style=" max-width: 375px;padding: 15px;
+                                      margin: 0 auto;">
+                    {{ AuthCode.password1.label_tag }}
+                    {{ AuthCode.password1 }}
+                </div>
+                <div class="form-group" style=" max-width: 375px;padding: 15px;
+                                      margin: 0 auto;">
+                    {{ AuthCode.password2.label_tag }}
+                    {{ AuthCode.password2 }}
+                </div>
+                <div class="form-group" style=" max-width: 400px;padding: 15px;
                                       margin: 0 auto;">
 
                     {% if login_form.captcha.errors %}
@@ -52,18 +59,10 @@
                 </div>
                 <div class="" style=" max-width: 375px;padding: 15px;
                                       margin: 0 auto;">
-                    <button type="reset" class="btn btn-default pull-left" href="{% url 'web_login' %}">页面重置</button>
-                    {#                    <a href="{% url 'web_login' %}">主页</a>#}
-                    {#                    <a href="{% url 'web_password_find_back' %}">#}
-                    {#                        <button class="btn btn-link pull-left">#}
-                    {#                            密码找回#}
-                    {#                        </button>#}
-                    {#                    </a>#}
-                    <button onclick="location.href='{% url 'web_password_find_back' %}'" type="button"
-                            class="btn btn-link pull-left">
-                        密码找回
+                    <button type="reset" class="btn btn-default pull-left" href="{% url 'web_password_find_back' %}">
+                        重发
                     </button>
-                    <button type="submit" class="btn btn-primary pull-right">登录</button>
+                    <button type="submit" class="btn btn-primary pull-right" name="input_code" value={{ email }}>确认</button>
                 </div>
             </form>
         </div>

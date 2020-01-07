@@ -27,4 +27,5 @@ urlpatterns = [
     path('json_transfer/', views.json_transfer, name='json_transfer'),
     path('homepage/', views.homepage, name='homepage'),
     path('web_feed_back/', views.web_feed_back, name='web_feed_back'),
+    path('web_password_find_back/', views.web_password_find_back, name='web_password_find_back'),
 ]

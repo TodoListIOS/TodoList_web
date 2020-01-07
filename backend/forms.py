@@ -27,3 +27,16 @@ class FeedBack(forms.Form):
     text = forms.CharField(
         widget=forms.Textarea(attrs={
             'style': 'height: 120px;width:100%'}))
+
+
+class PwdBack(forms.Form):
+    email = forms.EmailField(label="邮箱地址", widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+
+class AuthCode(forms.Form):
+    AuthCode = forms.CharField(label="AuthCode:", max_length=128,
+                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password1 = forms.CharField(label="New Password:", max_length=256,
+                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    password2 = forms.CharField(label="Confine Password:", max_length=256,
+                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
