@@ -183,7 +183,9 @@ def login_api(request):
             back_list = []
             user_data = {'name': user.Name, 'email': user.Email, 'password': user.Password}
             back_list.append(user_data)
+            print(back_list)
             response = json.dumps(back_list, ensure_ascii=False)
+            print(response)
             return HttpResponse(response)
         except ObjectDoesNotExist:
             return HttpResponse("Error")
