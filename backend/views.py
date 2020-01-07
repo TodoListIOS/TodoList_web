@@ -202,7 +202,7 @@ def register_api(request):
         try:
             user = models.Account.objects.get(Email=input_email)
             if user:
-                back_list = [{'state': "Email is already sign up"}]
+                back_list = [{'state': "repeat"}]
                 response = json.dumps(back_list, ensure_ascii=False)
                 return HttpResponse(response)
             else:
