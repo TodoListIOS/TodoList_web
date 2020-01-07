@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 import json
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.csrf import csrf_exempt
 
 from backend import models, forms
 
@@ -169,6 +170,7 @@ def web_password_find_back(request):
 
 
 # 登陆认证API接口
+@csrf_exempt
 def login_api(request):
     if request.method == 'POST':
         input_email = request.POST.get("email", None)
