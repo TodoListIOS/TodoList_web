@@ -200,8 +200,8 @@ def register_api(request):
         print(input_name)
         print(input_password)
         try:
-            user = models.Account.objects.get(Email=input_email)
-            if user:
+            user = models.Account.objects.filter(Email=input_email)
+            if user.count() != 0:
                 back_list = [{'state': "repeat"}]
                 response = json.dumps(back_list, ensure_ascii=False)
                 return HttpResponse(response)
