@@ -194,7 +194,7 @@ def login_api(request):
 def register_api(request):
     if request.method == 'POST':
         input_email = request.POST.get('email')
-        input_name = request.POST.get('name')
+        input_name = request.POST.get('username')
         input_password = request.POST.get('password')
         print(input_email)
         print(input_name)
