@@ -1,8 +1,11 @@
+import datetime
+
 from django.core import serializers
 from django.shortcuts import render, redirect
 import json
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from backend import models, forms
@@ -31,7 +34,7 @@ def web_login(request):
                     request.session['is_login'] = True
                     request.session['user_email'] = user.Email
                     request.session['user_name'] = user.Name
-
+                    request.session['user_password'] = user.Password
                     return redirect('homepage')
                 else:
                     message = "用户名或密码错误"
@@ -86,66 +89,30 @@ def homepage(request):
         return redirect('web_login')
 
     if request.method == "GET":
+        message = ""
+        if request.session.get('message', None):
+            message = request.session.get('message', None)
+            del request.session['message']
         email = request.session.get('user_email', None)
-
-        UserDetails = models.UserRecords.objects.filter(Email=email)
+        localtime = timezone.localtime(timezone.now())
+        time = localtime.strftime("%Y%m%d")
+        request.session['localtime'] = time
+        UserDetails = models.UserRecords.objects.filter(Email=email, due=time, checked=False)
         print(UserDetails)
-        context = {
-            'UserDetails': UserDetails,
-        }
         return render(request, 'homepage.html', locals())
     else:
-        if "add" in request.POST:
-            paper_id = request.POST["subscribe"]
-            print(paper_id)
-            user_id = request.session.get('user_id', False)
-            print(user_id)
-            department_id = request.session.get('department', False)
-            print(department_id)
-            order = models.Orders(name_id=user_id, bookname_id=paper_id, deptname_id=department_id)
-            order.save()
-            message = "订阅成功"
-            user_id = request.session.get('user_id', False)
-            papers = models.Books.objects.filter(orders__name=user_id)
-            sump = 0
-            for pap in papers:
-                sump = sump + int(pap.price)
-            print(papers)
-            print(sump)
-            context = {
-                'papers': papers,
-                'sump': sump,
-            }
-            return redirect('my_order')
-        elif "change" in request.POST:
-            paper_id = request.POST["change"]
-            request.session['change_paper'] = paper_id
-            return redirect('change_book_details')
-        elif "delete" in request.POST:
-            paper_id = request.POST["delete"]
-            paper = models.Books.objects.filter(id=paper_id)
-            paper.delete()
-            message = "删除成功"
-            papers = models.Books.objects.all()
-            print(papers)
-            context = {
-                'papers': papers,
-                'grant': int(request.session.get('grant', None))
-            }
-            print(context)
+        if "Done" in request.POST:
+            Record_timestamp = request.POST["Done"]
+            print(Record_timestamp)
+            email = request.session.get('user_email', False)
+            UserDetails = models.UserRecords.objects.get(Email=email, timestamp=Record_timestamp)
+            UserDetails.checked = True
+            UserDetails.save()
+            time = request.session.get('localtime', None)
+            UserDetails = models.UserRecords.objects.filter(Email=email, due=time, checked=False)
             return render(request, 'homepage.html', locals())
         else:
-            # pap_form = Searchpap(request.POST)
-            # if pap_form.is_valid():
-            #     pap_name = pap_form.cleaned_data['papername']
-            #
-            #     papers = models.Books.objects.annotate().filter(bookname__icontains=pap_name)
-            #
-            #     context = {
-            #         'papers': papers,
-            #     }
-
-                return render(request, 'homepage.html', locals())
+            return render(request, 'homepage.html', locals())
 
 
 # 网页登出
@@ -227,10 +194,39 @@ def web_password_find_back(request):
     return render(request, 'pwdback_email_input.html', locals())
 
 
-# 网络日程操作
-def web_user_details_operation(request):
+# 网络日程添加操作
+def web_add_item(request):
     if not request.session.get('is_login', None):
         return redirect('web_login')
+    if request.method == "POST":
+        ItemForm = forms.ItemForm(request.POST)
+        if ItemForm.is_valid():  # 获取数据
+            Title = ItemForm.cleaned_data['Title']
+            DueDate = ItemForm.cleaned_data['DueDate']
+            DueDate = DueDate.strftime("%Y%m%d")
+            print(DueDate)
+            today = datetime
+            localtime = timezone.localtime(timezone.now())
+            timestamp = localtime.strftime("%Y%m%d%H%M%S")
+            email = request.session.get('user_email', None)
+            New_UserRecord = models.UserRecords(detail=Title, due=DueDate, timestamp=timestamp, Email=email)
+            New_UserRecord.save()
+            message = "添加完成！"
+            request.session['message'] = message
+            return redirect('homepage')  # 自动跳转到登录页面
+
+    ItemForm = forms.ItemForm()
+    return render(request, 'add_item.html', locals())
+
+
+# 查看所有日程
+def web_all_items(request):
+    if not request.session.get('is_login', None):
+        return redirect('web_login')
+    if request.method == "GET":
+        email = request.session.get('user_email', None)
+        UserDetails = models.UserRecords.objects.filter(Email=email)
+        return render(request, 'all_items.html', locals())
 
 
 # 登陆认证API接口
@@ -352,3 +348,51 @@ def web_feed_back(request):
                 message = "提交失败！反馈邮件程序错误"
                 fb = forms.FeedBack()
                 return render(request, 'feedback.html', locals())
+
+
+def person_information(request):
+    if request.method == "POST":
+        if "change" in request.POST:
+            return redirect('change_details')
+        else:
+            return redirect('homepage')
+    else:
+        email = request.session.get('user_email', False)
+
+        person = models.Account.objects.get(Email=email)
+        return render(request, 'personal_details.html', locals())
+
+
+def person_information_change(request):
+    if request.method == "POST":
+        UserChangeForm = forms.UserChangeForm(request.POST)
+        message = "请检查填写的内容！(验证码)"
+        if UserChangeForm.is_valid():  # 获取数据
+            password0 = UserChangeForm.cleaned_data['password0']
+            password1 = UserChangeForm.cleaned_data['password1']
+            password2 = UserChangeForm.cleaned_data['password2']
+            password_old = request.session.get('user_password', False)
+            if password_old != password0:
+                message = "原密码错误"
+            else:
+                if password1 != password2:  # 判断两次密码是否相同
+                    message = "两次输入的密码不同！"
+                    return render(request, 'person_details_change.html', locals())
+                else:
+                    # 当一切都OK的情况下，修改用户
+                    user = models.Account.objects.get(Email=request.session.get('user_email', False))
+                    user.password = password1
+                    user.save()
+                    # user_name = request.session.get('user_name', False)
+                    # grant = request.session.get('grant', False)
+                    # request.session.flush()
+                    # request.session['is_login'] = True
+                    # request.session['user_id'] = user.id
+                    # request.session['user_name'] = user_name
+                    # request.session['password'] = password1
+                    # request.session['phone'] = phone
+                    # request.session['sex'] = sex
+                    # request.session['grant'] = grant
+                    return redirect('web_login')  # 自动跳转到个人信息详情界面
+    UserChangeForm = forms.UserChangeForm()
+    return render(request, 'person_details_change.html', locals())

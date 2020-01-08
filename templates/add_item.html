@@ -1,0 +1,45 @@
+{% extends 'base_for_login.html' %}
+
+{% block title %}添加{% endblock %}
+{% block content %}
+    <body background="/static/Login_background_picture1.jpg"
+          style=" background-repeat:no-repeat ;
+                background-size:100% 100%;
+                background-attachment: fixed;">
+    <div class="container">
+        <div class="col-md-4 col-md-offset-4"
+             style="background-color: #ffffff;padding: 20px;margin-top: 10%;border-radius: 5%">
+            <form class='form-register' action="" method="post">
+
+                {% if message %}
+                    <div class="alert alert-info alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                            <span aria-disabled="true">×</span>
+                        </button>
+                        <strong>
+                            {{ message }}
+                        </strong>
+                    </div>
+                {% endif %}
+
+                {% csrf_token %}
+
+                <h2 class="">Add a Task</h2>
+                <div class="form-group">
+                    {{ ItemForm.Title.label_tag }}
+                    {{ ItemForm.Title }}
+                </div>
+                <div class="form-group">
+                    {{ ItemForm.DueDate.label_tag }}
+                    {{ ItemForm.DueDate }}
+                </div>
+
+
+                <button type="reset" class="btn btn-default pull-left">重置</button>
+                <button type="submit" class="btn btn-primary pull-right">添加</button>
+
+            </form>
+        </div>
+    </div> <!-- /container -->
+    </body>
+{% endblock %}

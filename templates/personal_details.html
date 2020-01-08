@@ -1,0 +1,58 @@
+{% extends 'homepage.html' %}
+{% block title %}Personal Details{% endblock %}
+{% block content %}
+    {% if message %}
+        <div class="alert alert-primary alert-dismissible fade show mb-0" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <i class="fa fa-check mx-2"></i>
+            <strong>{{ message }}</strong>
+        </div>
+    {% endif %}
+    <div class="main-content-container container-fluid ">
+        <!-- Page Header -->
+
+        <div class="page-header row no-gutters">
+            <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                <span class="text-uppercase page-subtitle">用户信息</span>
+                <h3 class="page-title">Records</h3>
+            </div>
+        </div>
+        <!-- End Page Header -->
+
+        <!-- Default Light Table -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card card-small mb-4 pt-3">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item px-2">
+                            <div class="progress-wrapper">
+                                <h4 class="mb-0">Name: {{ person.Name }} </h4>
+                            </div>
+                        </li>
+                        <li class="list-group-item px-2">
+                            <div class="progress-wrapper">
+                                <strong class="text-muted d-block mb-2"
+                                        style="align-content: center">Email: {{ person.Email }}</strong>
+                                <strong class="text-muted d-block mb-2">Description:</strong>
+                                <a>Auth code: {{ person.Auth_code }}</a>
+                            </div>
+                        </li>
+                        <li class="list-group-item px-3">
+                            <form class='' action="{% url 'person_information' %}" method="post"
+                                  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary pull-right"
+                                        style="margin: auto"
+                                        name="Done">修改
+                                </button>
+                            </form>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

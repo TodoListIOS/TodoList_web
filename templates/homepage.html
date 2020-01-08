@@ -1,93 +1,236 @@
-{% extends 'base_for_login.html' %}
+<!doctype html>
+<html class="no-js h-100" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-{% block title %}
-    主页
-{% endblock %}
+    <title>{% block title %}Homepage{% endblock %}</title>
 
-{% block content %}
-    <body background="/static/Login_background_picture1.jpg"
-          style=" background-repeat:no-repeat ;
-                background-size:100% 100%;
-                background-attachment: fixed;">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-3 col-sm-2">
-                <a href="#" class="list-group-item active">功能</a>
-                <a href="{% url 'web_login' %}" class="list-group-item">
-                    <img src='/media/web_img/start.png' style="margin-right:15px; width:20px ">今日事程</a>
-                <a href="{% url 'web_login' %}" class="list-group-item">
-                    <img src="/media/web_img/personal1.png" style="margin-right:15px; width:20px ">个人信息</a>
-                <a href="{% url 'web_login' %}" class="list-group-item">
-                    <img src="/media/web_img/change2.png" style="margin-right:15px; width:20px ">修改信息</a>
-                <a href="{% url 'web_feed_back' %}" class="list-group-item">
-                    <img src="/media/web_img/feedback.png" style="margin-right:15px; width:20px ">邮件反馈</a>
-
-
+    <meta name="description"
+          content="A high-quality &amp; free Bootstrap admin dashboard template pack that comes with lots of templates and components.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" id="main-stylesheet" data-version="1.1.0"
+          href="../static/twts_244_Shards-admin/twts_244_Shards-admin/styles/shards-dashboards.1.1.0.min.css">
+    <link rel="stylesheet" href="../static/twts_244_Shards-admin/twts_244_Shards-admin/styles/extras.1.1.0.min.css">
+    <link rel="shortcut icon" href="../static/baseline_apps_black_18dp.bmp">
+    <script async defer src="https://buttons.github.io/buttons.js">
+    </script>
+    <script src="../static/js/echarts.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+</head>
+<body class="h-100">
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main Sidebar -->
+        <aside class="main-sidebar col-12 col-md-3 col-lg-2 px-0">
+            <div class="main-navbar">
+                <nav class="navbar align-items-stretch navbar-light bg-white flex-md-nowrap border-bottom p-0">
+                    <a class="navbar-brand w-100 mr-0" style="line-height: 25px;" href="http://www.buct.edu.cn/"
+                       target="_blank">
+                        <div class="d-table m-auto">
+                            <img class="user-avatar rounded-circle mr-2"
+                                 src="../static/buct.jpg"
+                                 alt="User Avatar">
+                            <span class="d-none d-md-inline-block"></span>
+                        </div>
+                    </a>
+                    <a class="toggle-sidebar d-sm-inline d-md-none d-lg-none">
+                        <i class="material-icons">&#xE5C4;</i>
+                    </a>
+                </nav>
             </div>
-            <div class="col-lg-9 col-sm-10">
-                {% if message %}
-                    <div class="alert alert-info alert-dismissible" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                            <span aria-disabled="true">×</span>
-                        </button>
-                        <strong>
-                            {{ message }}
-                        </strong>
+            <form action="#" class="main-sidebar__search w-100 border-right d-sm-flex d-md-none d-lg-none">
+                <div class="input-group input-group-seamless ml-3">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </div>
                     </div>
-                {% endif %}
-
-                <div class="col-md-8 col-md-offset-2" style="background-color: #ffffff;margin-top: 5px;margin-right:10px
-                ;border-radius: 3%">
-                    <h2 class="text-center" style="">今日代办</h2>
-
-                </div>
-{#                <div class="col-sm-4"#}
-{#                     style="background-color: #ffffff;padding: 5px;margin-top: 5px;border-radius: 3%">#}
-{#                    <form class='form-login' action="" method="post">#}
-{#                        {% csrf_token %}#}
-{#                        <h4 class="text-center" style="margin-top: 10px;color: #000000">添加事务</h4>#}
-{##}
-{#                        <div class="form-group" style=" max-width: 375px;padding: 15px;#}
-{#                                      margin: 0 auto;">#}
-{#                            {{ login_form.email.label_tag }}#}
-{#                            {{ login_form.email }}#}
-{#                        </div>#}
-{##}
-{#                        <div class="form-group" style=" max-width: 375px;padding: 15px;#}
-{#                                      margin: 0 auto;">#}
-{#                            {{ login_form.password.label_tag }}#}
-{#                            {{ login_form.password }}#}
-{#                        </div>#}
-{##}
-{#                        <div class="form-group" style=" max-width: 375px;padding: 15px;#}
-{#                                      margin: 0 auto;">#}
-{##}
-{#                            {% if login_form.captcha.errors %}#}
-{#                                {{ login_form.captcha.errors }}#}
-{#                            {% endif %}#}
-{#                            {{ login_form.captcha.label_tag }}#}
-{#                            {{ login_form.captcha }}#}
-{#                        </div>#}
-{#                        <div class="" style=" max-width: 375px;padding: 15px;#}
-{#                                      margin: 0 auto;">#}
-{#                            <button type="reset" class="btn btn-default pull-left" href="{% url 'web_login' %}">页面重置#}
-{#                            </button>#}
-                            {#                    <a href="{% url 'web_login' %}">主页</a>#}
-                            {#                    <a href="{% url 'web_password_find_back' %}">#}
-                            {#                        <button class="btn btn-link pull-left">#}
-                            {#                            密码找回#}
-                            {#                        </button>#}
-                            {#                    </a>#}
-{#                            <button onclick="location.href='{% url 'web_password_find_back' %}'" type="button"#}
-{#                                    class="btn btn-link pull-left">#}
-{#                                密码找回#}
-{#                            </button>#}
-{#                            <button type="submit" class="btn btn-primary pull-right">登录</button>#}
-{#                        </div>#}
-{#                    </form>#}
-{#                </div>#}
+                    <input class="navbar-search form-control" type="text" placeholder="Search for something..."
+                           aria-label="Search"></div>
+            </form>
+            <div class="nav-wrapper">
+                <ul class="nav flex-column ">
+                    <li class="nav-item dropdown ">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                           role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons">card_travel</i>
+                            <span>事项处理</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-small">
+                            <a class="dropdown-item "
+                               href="{% url 'web_add_item' %}">
+                                <i class="material-icons">add</i> 添加事件</a>
+                            <a class="dropdown-item"
+                               href="{% url 'web_all_items' %}">
+                                <i class="material-icons">event</i> 所有事程</a>
+                            <div class="dropdown-divider"></div>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                           role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons">build</i>
+                            <span>系统设置</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-small">
+                            <a class="dropdown-item"
+                               href="{% url 'person_information' %}">
+                                <i class="material-icons">perm_identity</i> 个人信息</a>
+                            <a class="dropdown-item"
+                               href="{% url 'person_information_change' %}">
+                                <i class="material-icons">settings_backup_restore</i> 信息修改</a>
+                            <a class="dropdown-item"
+                               href="{% url 'web_logout' %}">
+                                <i class="material-icons">keyboard_backspace</i> 退出系统</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                           role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons">done</i>
+                            <span>已完成</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-small">
+                            <a class="dropdown-item"
+                               href="{% url 'json_transfer' %}">
+                                <i class="material-icons">filter</i> show_test_api</a>
+                            <div class="dropdown-divider"></div>
+                        </div>
+                    </li>
+                </ul>
             </div>
-        </div>
+        </aside>
+        <!-- End Main Sidebar -->
+        <main class="main-content col-lg-10 col-md-9 col-sm-12 p-0 offset-lg-2 offset-md-3 ">
+            <div class="main-navbar sticky-top bg-white">
+                <!-- Main Navbar -->
+                <nav class="navbar align-items-stretch navbar-light flex-md-nowrap p-0">
+                    <form action="#" class="main-navbar__search w-100 d-none d-md-flex d-lg-flex">
+                        <div class="input-group input-group-seamless ml-3">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                            </div>
+                            <input class="navbar-search form-control" type="text" placeholder="Search for something..."
+                                   aria-label="Search"></div>
+                    </form>
+                    <ul class="navbar-nav border-left flex-row ">
+                        <li class="nav-item border-right dropdown notifications">
+                            <a class="nav-link nav-link-icon text-center" href="{% url 'homepage' %}" role="button">
+                                <div class="nav-link-icon__wrapper">
+                                    <i class="material-icons">home</i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#"
+                               role="button" aria-haspopup="true" aria-expanded="false">
+                                <img class="user-avatar rounded-circle mr-2"
+                                     src="../static/twts_244_Shards-admin/twts_244_Shards-admin/images/avatars/images.jpg"
+                                     alt="User Avatar">
+                                <span class="d-none d-md-inline-block">你好，{{ request.session.user_name }}</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-small">
+                                <a class="dropdown-item"
+                                   href="{% url 'homepage' %}">
+                                    <i class="material-icons">&#xE7FD;</i> 设置</a>
+                                <a class="dropdown-item"
+                                   href="{% url 'homepage' %}">
+                                    <i class="material-icons">note_add</i> 添加</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-danger" href="{% url 'web_logout' %}">
+                                    <i class="material-icons text-danger">&#xE879;</i> Logout </a>
+                            </div>
+                        </li>
+                    </ul>
+                    <nav class="nav">
+                        <a href="#"
+                           class="nav-link nav-link-icon toggle-sidebar d-md-inline d-lg-none text-center border-left"
+                           data-toggle="collapse" data-target=".header-navbar" aria-expanded="false"
+                           aria-controls="header-navbar">
+                            <i class="material-icons">&#xE5D2;</i>
+                        </a>
+                    </nav>
+                </nav>
+            </div>
+
+            <!-- / .main-navbar -->
+            {% block content %}
+
+                <div class="main-content-container container-fluid ">
+                    <!-- Page Header -->
+
+                    <div class="page-header row no-gutters">
+                        <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                            <span class="text-uppercase page-subtitle">Overview</span>
+                            <h3 class="page-title">Work Table</h3>
+                        </div>
+                    </div>
+                    <!-- End Page Header -->
+
+                    <!-- Default Light Table -->
+                    <div class="row">
+                        {% for userdetail in UserDetails %}
+                            <div class="col-lg-6">
+                                <div class="card card-small mb-4 pt-3">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item px-2">
+                                            <div class="progress-wrapper">
+                                                <h4 class="mb-0">No.{{ forloop.counter }} </h4>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item px-2">
+                                            <div class="progress-wrapper">
+                                                <strong class="text-muted d-block mb-2" style="align-content: center">Title: {{ userdetail.detail }}</strong>
+                                                <strong class="text-muted d-block mb-2">Description:</strong>
+                                                <a>talk with Prof.He about the experiment</a>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item px-3">
+                                            <form class='' action="{% url 'homepage' %}" method="post"
+                                                  enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-primary pull-right"
+                                                        style="margin: auto" value="{{ userdetail.timestamp }}"
+                                                        name="Done">Done
+                                                </button>
+                                            </form>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endblock %}
+
+            <footer class="main-footer d-flex p-2 px-3 bg-white border-top">
+            <span class="copyright ml-auto my-auto mr-2">Copyright © 2019
+                <a href="#" target="_blank"></a> </span>
+            </footer>
+        </main>
     </div>
-    </body>
-{% endblock %}
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script src="https://unpkg.com/shards-ui@latest/dist/js/shards.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sharrre/2.0.1/jquery.sharrre.min.js"></script>
+<script src="../static/twts_244_Shards-admin/twts_244_Shards-admin/scripts/extras.1.1.0.min.js"></script>
+<script src="../static/twts_244_Shards-admin/twts_244_Shards-admin/scripts/shards-dashboards.1.1.0.min.js"></script>
+<script src="../static/twts_244_Shards-admin/twts_244_Shards-admin/scripts/app/app-blog-overview.1.1.0.js"></script>
+</body>
+</html>
