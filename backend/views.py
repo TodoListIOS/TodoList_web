@@ -379,6 +379,27 @@ def records_checked_api(request):
             return HttpResponse(response)
 
 
+# records_add_api API接口
+@csrf_exempt
+def records_add_api(request):
+    if request.method == "POST":
+        due = request.POST.get('due')
+        detail = request.POST.get('detail')
+        checked = request.POST.get('checked')
+        timestamp = request.POST.get('timestamp')
+        email = request.POST.get('email')
+        try:
+            record = models.UserRecords(Email=email, timestamp=timestamp, due=due, detail=detail, checked=checked)
+            record.save()
+            back_list = [{'state': "add success"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+        except ObjectDoesNotExist:
+            back_list = [{'state': "error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+
+
 # 同步记录修改情况API接口
 @csrf_exempt
 def records_change_api(request):
