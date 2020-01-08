@@ -49,10 +49,11 @@ class ItemForm(forms.Form):
 
 
 class UserChangeForm(forms.Form):
-    email = forms.EmailField(label="邮箱地址", widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    password0 = forms.CharField(label="Password:", max_length=256,
+    username = forms.CharField(label="Username:", max_length=128,
+                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password0 = forms.CharField(label="Original Password:", max_length=256,
                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    password1 = forms.CharField(label="Password:", max_length=256,
+    password1 = forms.CharField(label="New Password:", max_length=256,
                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password2 = forms.CharField(label="Confine Password:", max_length=256,
                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}))

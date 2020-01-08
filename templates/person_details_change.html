@@ -15,43 +15,72 @@
 
         <div class="page-header row no-gutters">
             <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
-                <span class="text-uppercase page-subtitle">用户信息</span>
-                <h3 class="page-title">Records</h3>
+                <span class="text-uppercase page-subtitle">Overview</span>
+                <h3 class="page-title">Work Table</h3>
             </div>
         </div>
         <!-- End Page Header -->
 
         <!-- Default Light Table -->
         <div class="row">
-            <div class="col-lg-8">
+
+            <div class="col-lg-3">
+            </div>
+            <div class="col-lg-6">
                 <div class="card card-small mb-4 pt-3">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item px-2">
-                            <div class="progress-wrapper">
-                                <h4 class="mb-0">Name: {{ person.Name }} </h4>
-                            </div>
-                        </li>
-                        <li class="list-group-item px-2">
-                            <div class="progress-wrapper">
-                                <strong class="text-muted d-block mb-2"
-                                        style="align-content: center">Email: {{ person.Email }}</strong>
-                                <strong class="text-muted d-block mb-2">Description:</strong>
-                                <a>Auth code: {{ person.Auth_code }}</a>
-                            </div>
-                        </li>
-                        <li class="list-group-item px-3">
-                            <form class='' action="{% url 'person_information' %}" method="post"
-                                  enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-primary pull-right"
-                                        style="margin: auto"
-                                        name="Done">修改
-                                </button>
-                            </form>
-                        </li>
+                        <form class='' method="post" action="">
+                            {% csrf_token %}
+                            <li class="list-group-item px-2">
+                                <div class="progress-wrapper">
+                                    <h4 class="mb-0">Origin Name: {{ person.Name }} </h4>
+                                </div>
+                                <div class="form-group" style=" max-width: 375px;padding: 15px;
+                                      margin: 0 auto;">
+                                    {{ UserChangeForm.username.label_tag }}
+                                    {{ UserChangeForm.username }}
+                                </div>
+                            </li>
+                            <li class="list-group-item px-2">
+                                <div class="progress-wrapper">
+                                    <strong class="text-muted d-block mb-2"
+                                            style="align-content: center">Email: {{ person.Email }}</strong>
+                                    <strong class="text-muted d-block mb-2">Password Class:</strong>
+                                    <div class="form-group" style=" max-width: 375px;padding: 15px;
+                                      margin: 0 auto;">
+                                        {{ UserChangeForm.password0.label_tag }}
+                                        {{ UserChangeForm.password0 }}
+                                    </div>
+                                    <div class="form-group" style=" max-width: 375px;padding: 15px;
+                                      margin: 0 auto;">
+                                        {{ UserChangeForm.password1.label_tag }}
+                                        {{ UserChangeForm.password1 }}
+                                    </div>
+                                    <div class="form-group" style=" max-width: 375px;padding: 15px;
+                                      margin: 0 auto;">
+                                        {{ UserChangeForm.password2.label_tag }}
+                                        {{ UserChangeForm.password2 }}
+                                    </div>
+                                    <div class="form-group" style=" max-width: 375px;padding: 15px;
+                                      margin: 0 auto;">
 
+                                        {% if UserChangeForm.captcha.errors %}
+                                            {{ UserChangeForm.captcha.errors }}
+                                        {% endif %}
+                                        {{ UserChangeForm.captcha.label_tag }}
+                                        {{ UserChangeForm.captcha }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item px-3">
+                                <button type="submit" class="btn btn-primary pull-right">提交</button>
+                            </li>
+                        </form>
                     </ul>
                 </div>
+            </div>
+            <div class="col-lg-3">
+
             </div>
         </div>
     </div>

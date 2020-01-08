@@ -353,12 +353,11 @@ def web_feed_back(request):
 def person_information(request):
     if request.method == "POST":
         if "change" in request.POST:
-            return redirect('change_details')
+            return redirect('person_information_change')
         else:
             return redirect('homepage')
     else:
         email = request.session.get('user_email', False)
-
         person = models.Account.objects.get(Email=email)
         return render(request, 'personal_details.html', locals())
 
@@ -367,11 +366,15 @@ def person_information_change(request):
     if request.method == "POST":
         UserChangeForm = forms.UserChangeForm(request.POST)
         message = "请检查填写的内容！(验证码)"
+        print(123)
         if UserChangeForm.is_valid():  # 获取数据
+            print(1234)
+            username = UserChangeForm.cleaned_data['username']
             password0 = UserChangeForm.cleaned_data['password0']
             password1 = UserChangeForm.cleaned_data['password1']
             password2 = UserChangeForm.cleaned_data['password2']
             password_old = request.session.get('user_password', False)
+
             if password_old != password0:
                 message = "原密码错误"
             else:
@@ -379,20 +382,13 @@ def person_information_change(request):
                     message = "两次输入的密码不同！"
                     return render(request, 'person_details_change.html', locals())
                 else:
-                    # 当一切都OK的情况下，修改用户
                     user = models.Account.objects.get(Email=request.session.get('user_email', False))
-                    user.password = password1
+                    user.Password = password1
+                    user.Name = username
                     user.save()
-                    # user_name = request.session.get('user_name', False)
-                    # grant = request.session.get('grant', False)
-                    # request.session.flush()
-                    # request.session['is_login'] = True
-                    # request.session['user_id'] = user.id
-                    # request.session['user_name'] = user_name
-                    # request.session['password'] = password1
-                    # request.session['phone'] = phone
-                    # request.session['sex'] = sex
-                    # request.session['grant'] = grant
+                    request.session.flush()
                     return redirect('web_login')  # 自动跳转到个人信息详情界面
+    email = request.session.get('user_email', False)
+    person = models.Account.objects.get(Email=email)
     UserChangeForm = forms.UserChangeForm()
     return render(request, 'person_details_change.html', locals())
