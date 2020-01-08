@@ -246,7 +246,9 @@ def login_api(request):
             response = json.dumps(back_list, ensure_ascii=False)
             return HttpResponse(response)
         except ObjectDoesNotExist:
-            return HttpResponse("Error")
+            back_list = [{'state': "error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
 
 
 # 注册API接口
@@ -362,6 +364,7 @@ def records_checked_api(request):
         try:
             record = models.UserRecords.objects.get(Email=email, timestamp=timestamp)
             record.checked = True
+            record.sync = True
             record.save()
             back_list = [{'state': "sync success"}]
             response = json.dumps(back_list, ensure_ascii=False)
