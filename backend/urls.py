@@ -28,6 +28,7 @@ urlpatterns = [
     path('records_init_sync_api/', views.records_init_sync_api, name='records_init_sync_api'),
     path('records_checked_api/', views.records_checked_api, name='records_checked_api'),
     path('records_change_api/', views.records_change_api, name='records_change_api'),
+    path('records_add_api/', views.records_add_api, name='records_add_api'),
     path('json_transfer/', views.json_transfer, name='json_transfer'),
     path('homepage/', views.homepage, name='homepage'),
     path('web_feed_back/', views.web_feed_back, name='web_feed_back'),
