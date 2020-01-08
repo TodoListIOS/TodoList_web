@@ -407,9 +407,11 @@ def records_change_api(request):
         timestamp = request.POST.get('timestamp')
         email = request.POST.get('email')
         detail = request.POST.get('detail')
+        dueDate = request.POST.get('dueDate')
         try:
             record = models.UserRecords.objects.get(Email=email, timestamp=timestamp)
             record.detail = detail
+            record.due = dueDate
             record.save()
             back_list = [{'state': "sync success"}]
             response = json.dumps(back_list, ensure_ascii=False)
