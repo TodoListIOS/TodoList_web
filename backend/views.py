@@ -333,8 +333,63 @@ def password_change_api(request):
 
 # 同步记录API接口
 @csrf_exempt
-def records_sync_api(request):
-    pass
+def records_init_sync_api(request):
+    if request.method == "POST":
+        input_email = request.POST.get('email')
+        print(input_email)
+        try:
+            records = models.UserRecords.objects.filter(Email=input_email, checked=False)
+            back_list = []
+            for record in records:
+                user_data = {'detail': record.detail, 'due': record.due, 'checked': record.checked,
+                             'timestamp': record.timestamp}
+                back_list.append(user_data)
+                record.sync = True
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+        except ObjectDoesNotExist:
+            back_list = [{'state': "error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+
+
+# 同步记录完成情况API接口
+@csrf_exempt
+def records_checked_api(request):
+    if request.method == "POST":
+        timestamp = request.POST.get('timestamp')
+        email = request.POST.get('email')
+        try:
+            record = models.UserRecords.objects.get(Email=email, timestamp=timestamp)
+            record.checked = True
+            record.save()
+            back_list = [{'state': "sync success"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+        except ObjectDoesNotExist:
+            back_list = [{'state': "error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+
+
+# 同步记录修改情况API接口
+@csrf_exempt
+def records_change_api(request):
+    if request.method == "POST":
+        timestamp = request.POST.get('timestamp')
+        email = request.POST.get('email')
+        detail = request.POST.get('detail')
+        try:
+            record = models.UserRecords.objects.get(Email=email, timestamp=timestamp)
+            record.detail = detail
+            record.save()
+            back_list = [{'state': "sync success"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+        except ObjectDoesNotExist:
+            back_list = [{'state': "error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
 
 
 # 连接测试API接口
