@@ -296,6 +296,26 @@ def password_find_back_api(request):
             return HttpResponse('Error')
 
 
+# 密码修改API
+@csrf_exempt
+def password_change_api(request):
+    if request.method == "POST":
+        input_email = request.POST.get('email')
+        input_authcode = request.POST.get('authcode')
+        input_new_password = request.POST.get('new password')
+        user = models.Account.objects.get(Email=input_email)
+        if user.Auth_code != input_authcode:
+            back_list = [{'state': "authcode_error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+        else:
+            user.Password = input_new_password
+            user.save()
+            back_list = [{'state': "password_back"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+
+
 # 同步记录API接口
 @csrf_exempt
 def records_sync_api(request):
