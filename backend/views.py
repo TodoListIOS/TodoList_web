@@ -86,8 +86,66 @@ def homepage(request):
         return redirect('web_login')
 
     if request.method == "GET":
-        # announcement = models.Announcement.objects.filter(visible=True)
+        email = request.session.get('user_email', None)
+
+        UserDetails = models.UserRecords.objects.filter(Email=email)
+        print(UserDetails)
+        context = {
+            'UserDetails': UserDetails,
+        }
         return render(request, 'homepage.html', locals())
+    else:
+        if "add" in request.POST:
+            paper_id = request.POST["subscribe"]
+            print(paper_id)
+            user_id = request.session.get('user_id', False)
+            print(user_id)
+            department_id = request.session.get('department', False)
+            print(department_id)
+            order = models.Orders(name_id=user_id, bookname_id=paper_id, deptname_id=department_id)
+            order.save()
+            message = "订阅成功"
+            user_id = request.session.get('user_id', False)
+            papers = models.Books.objects.filter(orders__name=user_id)
+            sump = 0
+            for pap in papers:
+                sump = sump + int(pap.price)
+            print(papers)
+            print(sump)
+            context = {
+                'papers': papers,
+                'sump': sump,
+            }
+            return redirect('my_order')
+        elif "change" in request.POST:
+            paper_id = request.POST["change"]
+            request.session['change_paper'] = paper_id
+            return redirect('change_book_details')
+        elif "delete" in request.POST:
+            paper_id = request.POST["delete"]
+            paper = models.Books.objects.filter(id=paper_id)
+            paper.delete()
+            message = "删除成功"
+            papers = models.Books.objects.all()
+            print(papers)
+            context = {
+                'papers': papers,
+                'grant': int(request.session.get('grant', None))
+            }
+            print(context)
+            return render(request, 'homepage.html', locals())
+        else:
+            # pap_form = Searchpap(request.POST)
+            # if pap_form.is_valid():
+            #     pap_name = pap_form.cleaned_data['papername']
+            #
+            #     papers = models.Books.objects.annotate().filter(bookname__icontains=pap_name)
+            #
+            #     context = {
+            #         'papers': papers,
+            #     }
+
+                return render(request, 'homepage.html', locals())
 
 
 # 网页登出
@@ -169,6 +227,12 @@ def web_password_find_back(request):
     return render(request, 'pwdback_email_input.html', locals())
 
 
+# 网络日程操作
+def web_user_details_operation(request):
+    if not request.session.get('is_login', None):
+        return redirect('web_login')
+
+
 # 登陆认证API接口
 @csrf_exempt
 def login_api(request):
@@ -217,6 +281,7 @@ def register_api(request):
 
 
 # 密码找回API接口
+@csrf_exempt
 def password_find_back_api(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -236,6 +301,7 @@ def password_find_back_api(request):
 
 
 # 同步记录API接口
+@csrf_exempt
 def records_sync_api(request):
     pass
 
