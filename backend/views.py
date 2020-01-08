@@ -391,7 +391,7 @@ def records_add_api(request):
         try:
             record = models.UserRecords(Email=email, timestamp=timestamp, due=due, detail=detail, checked=checked)
             record.save()
-            back_list = [{'state': "add success"}]
+            back_list = [{'state': "pass"}]
             response = json.dumps(back_list, ensure_ascii=False)
             return HttpResponse(response)
         except ObjectDoesNotExist:
