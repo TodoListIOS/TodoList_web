@@ -241,7 +241,7 @@ def login_api(request):
         try:
             user = models.Account.objects.get(Email=input_email, Password=input_password)
             back_list = []
-            user_data = {'name': user.Name, 'email': user.Email, 'password': user.Password}
+            user_data = {'name': user.Name, 'email': user.Email, 'password': user.Password, 'state': "pass"}
             back_list.append(user_data)
             response = json.dumps(back_list, ensure_ascii=False)
             return HttpResponse(response)
