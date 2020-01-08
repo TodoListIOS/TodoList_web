@@ -343,9 +343,9 @@ def records_init_sync_api(request):
             records = models.UserRecords.objects.filter(Email=input_email, checked=False)
             back_list = []
             for record in records:
-                Year = record.due[0:3]
-                Month = record.due[4:5]
-                Day = record.due[6:7]
+                Year = record.due[0:4]
+                Month = record.due[4:6]
+                Day = record.due[6:8]
                 user_data = {'detail': record.detail, 'Year': Year, 'Month': Month, 'Day': Day,
                              'checked': record.checked,
                              'timestamp': record.timestamp}
