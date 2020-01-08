@@ -291,9 +291,13 @@ def password_find_back_api(request):
                         'buct_dongwu@163.com',
                         emaillist)
         if res == 1:
-            return HttpResponse('processed')
+            back_list = [{'state': "processed"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
         else:
-            return HttpResponse('Error')
+            back_list = [{'state': "Error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
 
 
 # 密码修改API
