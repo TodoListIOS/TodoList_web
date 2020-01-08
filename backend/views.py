@@ -285,6 +285,14 @@ def password_find_back_api(request):
         # 值3： 发件人      值4： 收件人
         emaillist = [email]
         code = random.randint(1000, 9999)
+        try:
+            user = models.Account.objects.get(Email=email)
+            user.Auth_code = code
+            user.save()
+        except ObjectDoesNotExist:
+            back_list = [{'state': "Ops,用户不存在！"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
         text = "您的密码找回验证码为：" + str(code)
         res = send_mail('验证码',
                         text,
@@ -305,8 +313,11 @@ def password_find_back_api(request):
 def password_change_api(request):
     if request.method == "POST":
         input_email = request.POST.get('email')
-        input_authcode = request.POST.get('authcode')
-        input_new_password = request.POST.get('new password')
+        input_authcode = request.POST.get('authCode')
+        input_new_password = request.POST.get('newPassword')
+        print(input_email)
+        print(input_authcode)
+        print(input_new_password)
         user = models.Account.objects.get(Email=input_email)
         if user.Auth_code != input_authcode:
             back_list = [{'state': "authcode_error"}]
