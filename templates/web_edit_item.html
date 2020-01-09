@@ -1,0 +1,70 @@
+{% extends 'homepage.html' %}
+{% block title %}Item Edit{% endblock %}
+{% block content %}
+    {% if message %}
+        <div class="alert alert-primary alert-dismissible fade show mb-0" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <i class="fa fa-check mx-2"></i>
+            <strong>{{ message }}</strong>
+        </div>
+    {% endif %}
+    <div class="main-content-container container-fluid ">
+        <!-- Page Header -->
+
+        <div class="page-header row no-gutters">
+            <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                <span class="text-uppercase page-subtitle">Overview</span>
+                <h3 class="page-title">Work Table</h3>
+            </div>
+        </div>
+        <!-- End Page Header -->
+
+        <!-- Default Light Table -->
+        <div class="row">
+
+            <div class="col-lg-3">
+            </div>
+            <div class="col-lg-6">
+                <div class="card card-small mb-4 pt-3">
+                    <ul class="list-group list-group-flush">
+                        <form class='' method="post" action="">
+                            {% csrf_token %}
+                            <li class="list-group-item px-2">
+                                <div class="progress-wrapper">
+                                    <h4 class="mb-0">Title： </h4>
+                                </div>
+                                <div class="form-group" style=" max-width: 375px;padding: 15px;
+                                      margin: 0 auto;">
+                                    {{ ChangeRecord.title.label_tag }}
+                                    {{ ChangeRecord.title }}
+                                </div>
+                            </li>
+                            <li class="list-group-item px-2">
+                                <div class="progress-wrapper">
+                                    <strong class="text-muted d-block mb-2"
+                                            style="align-content: center">Time:</strong>
+                                    <strong class="text-muted d-block mb-2"></strong>
+                                    <div class="form-group" style=" max-width: 375px;padding: 15px;
+                                      margin: 0 auto;">
+                                        {{ ChangeRecord.DueDate.label_tag }}
+                                        {{ ChangeRecord.DueDate }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item px-3">
+                                <button type="submit" class="btn btn-primary pull-right" value="{{ timestamp }}"
+                                        name="Done">提交
+                                </button>
+                            </li>
+                        </form>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3">
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

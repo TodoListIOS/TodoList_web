@@ -196,6 +196,10 @@
                                             <form class='' action="{% url 'homepage' %}" method="post"
                                                   enctype="multipart/form-data">
                                                 {% csrf_token %}
+                                                <button type="submit" class="btn btn-primary pull-left"
+                                                        style="margin: auto" value="{{ userdetail.timestamp }}"
+                                                        name="Change">Change
+                                                </button>
                                                 <button type="submit" class="btn btn-primary pull-right"
                                                         style="margin: auto" value="{{ userdetail.timestamp }}"
                                                         name="Done">Done

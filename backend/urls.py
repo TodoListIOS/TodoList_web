@@ -34,6 +34,7 @@ urlpatterns = [
     path('web_feed_back/', views.web_feed_back, name='web_feed_back'),
     path('web_password_find_back/', views.web_password_find_back, name='web_password_find_back'),
     path('web_add_item/', views.web_add_item, name='web_add_item'),
+    path('web_edit_item/', views.web_edit_item, name='web_edit_item'),
     path('web_all_items/', views.web_all_items, name='web_all_items'),
     path('person_information/', views.person_information, name='person_information'),
     path('person_information_change/', views.person_information_change, name='person_information_change'),

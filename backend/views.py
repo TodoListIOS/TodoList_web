@@ -112,7 +112,9 @@ def homepage(request):
             UserDetails = models.UserRecords.objects.filter(Email=email, due=time, checked=False)
             return render(request, 'homepage.html', locals())
         else:
-            return render(request, 'homepage.html', locals())
+            Record_timestamp = request.POST["Change"]
+            request.session['timestamp'] = Record_timestamp
+            return redirect('web_edit_item')
 
 
 # 网页登出
@@ -217,6 +219,38 @@ def web_add_item(request):
 
     ItemForm = forms.ItemForm()
     return render(request, 'add_item.html', locals())
+
+
+# 网络日程修改操作
+def web_edit_item(request):
+    if not request.session.get('is_login', None):
+        return redirect('web_login')
+    if request.method == "POST":
+        Record_timestamp = request.POST["Done"]
+        ChangeRecord = forms.ChangeRecord(request.POST)
+        if ChangeRecord.is_valid():  # 获取数据
+            title = ChangeRecord.cleaned_data['title']
+            dueDate = ChangeRecord.cleaned_data['DueDate']
+            dueDate = dueDate.strftime("%Y%m%d")
+            email = request.session.get('user_email', False)
+            UserDetails = models.UserRecords.objects.get(Email=email, timestamp=Record_timestamp)
+            UserDetails.detail = title
+            UserDetails.due = dueDate
+            UserDetails.save()
+            message = "修改成功"
+            request.session['message'] = message
+            return redirect('homepage')  # 自动跳转到登录页面
+
+    timestamp = ""
+    if request.session.get('timestamp', None):
+        timestamp = request.session.get('timestamp', None)
+        del request.session['timestamp']
+    print(timestamp)
+    email = request.session.get('user_email', None)
+    record = models.UserRecords.objects.get(Email=email, timestamp=timestamp)
+    title = {'title': record.detail}
+    ChangeRecord = forms.ChangeRecord(initial=title)
+    return render(request, 'web_edit_item.html', locals())
 
 
 # 查看所有日程

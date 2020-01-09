@@ -58,3 +58,8 @@ class UserChangeForm(forms.Form):
     password2 = forms.CharField(label="Confine Password:", max_length=256,
                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     captcha = CaptchaField(label='Captcha  ')
+
+
+class ChangeRecord(forms.Form):
+    title = forms.CharField(label="Title：", max_length=128, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    DueDate = forms.DateTimeField(label="DueDate:", widget=forms.DateInput(attrs={'type': 'date'}))
