@@ -48,6 +48,10 @@
                                     {% if userdetail.checked %}
                                         <strong class="text-muted d-block mb-2">已完成</strong>
                                     {% else %}
+                                        <button type="submit" class="btn btn-primary pull-left"
+                                                style="margin: auto" value="{{ userdetail.timestamp }}"
+                                                name="Change">Change
+                                        </button>
                                         <button type="submit" class="btn btn-primary pull-right"
                                                 style="margin: auto" value="{{ userdetail.timestamp }}"
                                                 name="Done">Done

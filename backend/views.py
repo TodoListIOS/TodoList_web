@@ -112,7 +112,9 @@ def homepage(request):
             UserDetails = models.UserRecords.objects.filter(Email=email, due=time, checked=False)
             return render(request, 'homepage.html', locals())
         else:
-            return render(request, 'homepage.html', locals())
+            Record_timestamp = request.POST["Change"]
+            request.session['timestamp'] = Record_timestamp
+            return redirect('web_edit_item')
 
 
 # 网页登出
@@ -383,6 +385,16 @@ def person_information_change(request):
                     user = models.Account.objects.get(Email=request.session.get('user_email', False))
                     user.password = password1
                     user.save()
+                    # user_name = request.session.get('user_name', False)
+                    # grant = request.session.get('grant', False)
+                    # request.session.flush()
+                    # request.session['is_login'] = True
+                    # request.session['user_id'] = user.id
+                    # request.session['user_name'] = user_name
+                    # request.session['password'] = password1
+                    # request.session['phone'] = phone
+                    # request.session['sex'] = sex
+                    # request.session['grant'] = grant
                     return redirect('web_login')  # 自动跳转到个人信息详情界面
     UserChangeForm = forms.UserChangeForm()
     return render(request, 'person_details_change.html', locals())

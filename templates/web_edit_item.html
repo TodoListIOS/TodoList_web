@@ -1,5 +1,5 @@
 {% extends 'homepage.html' %}
-{% block title %}Personal Details{% endblock %}
+{% block title %}Item Edit{% endblock %}
 {% block content %}
     {% if message %}
         <div class="alert alert-primary alert-dismissible fade show mb-0" role="alert">
@@ -33,47 +33,30 @@
                             {% csrf_token %}
                             <li class="list-group-item px-2">
                                 <div class="progress-wrapper">
-                                    <h4 class="mb-0">Origin Name: {{ person.Name }} </h4>
+                                    <h4 class="mb-0">Title： </h4>
                                 </div>
                                 <div class="form-group" style=" max-width: 375px;padding: 15px;
                                       margin: 0 auto;">
-                                    {{ UserChangeForm.username.label_tag }}
-                                    {{ UserChangeForm.username }}
+                                    {{ ChangeRecord.title.label_tag }}
+                                    {{ ChangeRecord.title }}
                                 </div>
                             </li>
                             <li class="list-group-item px-2">
                                 <div class="progress-wrapper">
                                     <strong class="text-muted d-block mb-2"
-                                            style="align-content: center">Email: {{ person.Email }}</strong>
-                                    <strong class="text-muted d-block mb-2">Password Class:</strong>
+                                            style="align-content: center">Time:</strong>
+                                    <strong class="text-muted d-block mb-2"></strong>
                                     <div class="form-group" style=" max-width: 375px;padding: 15px;
                                       margin: 0 auto;">
-                                        {{ UserChangeForm.password0.label_tag }}
-                                        {{ UserChangeForm.password0 }}
-                                    </div>
-                                    <div class="form-group" style=" max-width: 375px;padding: 15px;
-                                      margin: 0 auto;">
-                                        {{ UserChangeForm.password1.label_tag }}
-                                        {{ UserChangeForm.password1 }}
-                                    </div>
-                                    <div class="form-group" style=" max-width: 375px;padding: 15px;
-                                      margin: 0 auto;">
-                                        {{ UserChangeForm.password2.label_tag }}
-                                        {{ UserChangeForm.password2 }}
-                                    </div>
-                                    <div class="form-group" style=" max-width: 375px;padding: 15px;
-                                      margin: 0 auto;">
-
-                                        {% if UserChangeForm.captcha.errors %}
-                                            {{ UserChangeForm.captcha.errors }}
-                                        {% endif %}
-                                        {{ UserChangeForm.captcha.label_tag }}
-                                        {{ UserChangeForm.captcha }}
+                                        {{ ChangeRecord.DueDate.label_tag }}
+                                        {{ ChangeRecord.DueDate }}
                                     </div>
                                 </div>
                             </li>
                             <li class="list-group-item px-3">
-                                <button type="submit" class="btn btn-primary pull-right">提交</button>
+                                <button type="submit" class="btn btn-primary pull-right" value="{{ timestamp }}"
+                                        name="Done">提交
+                                </button>
                             </li>
                         </form>
                     </ul>
