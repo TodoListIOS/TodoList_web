@@ -221,6 +221,38 @@ def web_add_item(request):
     return render(request, 'add_item.html', locals())
 
 
+# 网络日程修改操作
+def web_edit_item(request):
+    if not request.session.get('is_login', None):
+        return redirect('web_login')
+    if request.method == "POST":
+        Record_timestamp = request.POST["Done"]
+        ChangeRecord = forms.ChangeRecord(request.POST)
+        if ChangeRecord.is_valid():  # 获取数据
+            title = ChangeRecord.cleaned_data['title']
+            dueDate = ChangeRecord.cleaned_data['DueDate']
+            dueDate = dueDate.strftime("%Y%m%d")
+            email = request.session.get('user_email', False)
+            UserDetails = models.UserRecords.objects.get(Email=email, timestamp=Record_timestamp)
+            UserDetails.detail = title
+            UserDetails.due = dueDate
+            UserDetails.save()
+            message = "修改成功"
+            request.session['message'] = message
+            return redirect('homepage')  # 自动跳转到登录页面
+
+    timestamp = ""
+    if request.session.get('timestamp', None):
+        timestamp = request.session.get('timestamp', None)
+        del request.session['timestamp']
+    print(timestamp)
+    email = request.session.get('user_email', None)
+    record = models.UserRecords.objects.get(Email=email, timestamp=timestamp)
+    title = {'title': record.detail}
+    ChangeRecord = forms.ChangeRecord(initial=title)
+    return render(request, 'web_edit_item.html', locals())
+
+
 # 查看所有日程
 def web_all_items(request):
     if not request.session.get('is_login', None):
@@ -243,12 +275,14 @@ def login_api(request):
         try:
             user = models.Account.objects.get(Email=input_email, Password=input_password)
             back_list = []
-            user_data = {'name': user.Name, 'email': user.Email, 'password': user.Password}
+            user_data = {'name': user.Name, 'email': user.Email, 'password': user.Password, 'state': "pass"}
             back_list.append(user_data)
             response = json.dumps(back_list, ensure_ascii=False)
             return HttpResponse(response)
         except ObjectDoesNotExist:
-            return HttpResponse("Error")
+            back_list = [{'state': "error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
 
 
 # 注册API接口
@@ -287,21 +321,139 @@ def password_find_back_api(request):
         # 值3： 发件人      值4： 收件人
         emaillist = [email]
         code = random.randint(1000, 9999)
+        try:
+            user = models.Account.objects.get(Email=email)
+            user.Auth_code = code
+            user.save()
+        except ObjectDoesNotExist:
+            back_list = [{'state': "Ops,用户不存在！"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
         text = "您的密码找回验证码为：" + str(code)
         res = send_mail('验证码',
                         text,
                         'buct_dongwu@163.com',
                         emaillist)
         if res == 1:
-            return HttpResponse('processed')
+            back_list = [{'state': "processed"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
         else:
-            return HttpResponse('Error')
+            back_list = [{'state': "Error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+
+
+# 密码修改API
+@csrf_exempt
+def password_change_api(request):
+    if request.method == "POST":
+        input_email = request.POST.get('email')
+        input_authcode = request.POST.get('authCode')
+        input_new_password = request.POST.get('newPassword')
+        print(input_email)
+        print(input_authcode)
+        print(input_new_password)
+        user = models.Account.objects.get(Email=input_email)
+        if user.Auth_code != input_authcode:
+            back_list = [{'state': "authcode_error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+        else:
+            user.Password = input_new_password
+            user.save()
+            back_list = [{'state': "password_back"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
 
 
 # 同步记录API接口
 @csrf_exempt
-def records_sync_api(request):
-    pass
+def records_init_sync_api(request):
+    if request.method == "POST":
+        input_email = request.POST.get('email')
+        print(input_email)
+        try:
+            records = models.UserRecords.objects.filter(Email=input_email, checked=False)
+            back_list = []
+            for record in records:
+                Year = record.due[0:4]
+                Month = record.due[4:6]
+                Day = record.due[6:8]
+                user_data = {'detail': record.detail, 'Year': Year, 'Month': Month, 'Day': Day,
+                             'checked': record.checked,
+                             'timestamp': record.timestamp}
+                back_list.append(user_data)
+                record.sync = True
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+        except ObjectDoesNotExist:
+            back_list = [{'state': "error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+
+
+# 同步记录完成情况API接口
+@csrf_exempt
+def records_checked_api(request):
+    if request.method == "POST":
+        timestamp = request.POST.get('timestamp')
+        email = request.POST.get('email')
+        try:
+            record = models.UserRecords.objects.get(Email=email, timestamp=timestamp)
+            record.checked = True
+            record.sync = True
+            record.save()
+            back_list = [{'state': "sync success"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+        except ObjectDoesNotExist:
+            back_list = [{'state': "error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+
+
+# records_add_api API接口
+@csrf_exempt
+def records_add_api(request):
+    if request.method == "POST":
+        due = request.POST.get('due')
+        detail = request.POST.get('detail')
+        checked = request.POST.get('checked')
+        timestamp = request.POST.get('timestamp')
+        email = request.POST.get('email')
+        try:
+            record = models.UserRecords(Email=email, timestamp=timestamp, due=due, detail=detail, checked=checked)
+            record.save()
+            back_list = [{'state': "pass"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+        except ObjectDoesNotExist:
+            back_list = [{'state': "error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+
+
+# 同步记录修改情况API接口
+@csrf_exempt
+def records_change_api(request):
+    if request.method == "POST":
+        timestamp = request.POST.get('timestamp')
+        email = request.POST.get('email')
+        detail = request.POST.get('detail')
+        dueDate = request.POST.get('dueDate')
+        try:
+            record = models.UserRecords.objects.get(Email=email, timestamp=timestamp)
+            record.detail = detail
+            record.due = dueDate
+            record.save()
+            back_list = [{'state': "sync success"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
+        except ObjectDoesNotExist:
+            back_list = [{'state': "error"}]
+            response = json.dumps(back_list, ensure_ascii=False)
+            return HttpResponse(response)
 
 
 # 连接测试API接口
@@ -355,12 +507,11 @@ def web_feed_back(request):
 def person_information(request):
     if request.method == "POST":
         if "change" in request.POST:
-            return redirect('change_details')
+            return redirect('person_information_change')
         else:
             return redirect('homepage')
     else:
         email = request.session.get('user_email', False)
-
         person = models.Account.objects.get(Email=email)
         return render(request, 'personal_details.html', locals())
 
@@ -369,11 +520,15 @@ def person_information_change(request):
     if request.method == "POST":
         UserChangeForm = forms.UserChangeForm(request.POST)
         message = "请检查填写的内容！(验证码)"
+        print(123)
         if UserChangeForm.is_valid():  # 获取数据
+            print(1234)
+            username = UserChangeForm.cleaned_data['username']
             password0 = UserChangeForm.cleaned_data['password0']
             password1 = UserChangeForm.cleaned_data['password1']
             password2 = UserChangeForm.cleaned_data['password2']
             password_old = request.session.get('user_password', False)
+
             if password_old != password0:
                 message = "原密码错误"
             else:
@@ -381,10 +536,13 @@ def person_information_change(request):
                     message = "两次输入的密码不同！"
                     return render(request, 'person_details_change.html', locals())
                 else:
-                    # 当一切都OK的情况下，修改用户
                     user = models.Account.objects.get(Email=request.session.get('user_email', False))
-                    user.password = password1
+                    user.Password = password1
+                    user.Name = username
                     user.save()
+                    request.session.flush()
                     return redirect('web_login')  # 自动跳转到个人信息详情界面
+    email = request.session.get('user_email', False)
+    person = models.Account.objects.get(Email=email)
     UserChangeForm = forms.UserChangeForm()
     return render(request, 'person_details_change.html', locals())
