@@ -30,5 +30,7 @@ def parse_page(html):
 
 def start_spider():
     html_page = get_html_text("https://www.boc.cn/sourcedb/whpj/")
-    BOC_dictionary = parse_page(html_page)
-    return BOC_dictionary
+    china_bank_dictionary = parse_page(html_page)
+    mail_content = china_bank_dictionary['bank_name'] + ' ' + china_bank_dictionary['price'] + ' ' + \
+                   china_bank_dictionary['update_time']
+    return mail_content

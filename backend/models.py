@@ -1,6 +1,5 @@
 from django.db import models
 
-
 # Create your models here.
 
 # 用户信息表，用于登录查找，注册写入，找回修改
@@ -28,3 +27,21 @@ class UserRecords(models.Model):
 
     class Meta:
         db_table = 'UserRecords'
+
+
+class BoCExchangeRate(models.Model):
+    timestamp = models.CharField(default='Tom_the_cat', null=False, max_length=128)
+    rate = models.FloatField(default='530.00', null=False, max_length=64)
+    spider_time = models.CharField(default='Tom_the_cat', null=False, max_length=128)
+
+    class Meta:
+        db_table = 'BOC_Exchange'
+
+
+class CEBExchangeRate(models.Model):
+    timestamp = models.CharField(default='Tom_the_cat', null=False, max_length=128)
+    rate = models.FloatField(default='530.00', null=False, max_length=64)
+    spider_time = models.CharField(default='Tom_the_cat', null=False, max_length=128)
+
+    class Meta:
+        db_table = 'CEB_Exchange'

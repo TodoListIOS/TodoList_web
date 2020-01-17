@@ -549,19 +549,29 @@ def person_information_change(request):
 
 
 def web_exchangerate():
-    rate = BOC_ExchangeRate.start_spider()
-    print(rate)
-    # 值1:邮件标题 值2：邮件主体 值3:发件人 值4：收件人
-
-    text = rate + "\n"
-    res = send_mail('Rate',
-                    text,
-                    'buct_dongwu@163.com',
-                    ['rui.cai2020@outlook.com'])
-
-    if res == 1:
-        message = "提交成功！谢谢"
-        return HttpResponse("OK")
+    BOC_dictionary = BOC_ExchangeRate.start_spider()
+    print(BOC_dictionary)
+    print(BOC_dictionary.get('bank_name'))
+    localtime = timezone.localtime(timezone.now())
+    timestamp = localtime.strftime("%Y%m%d%H%M%S")
+    same_spider_time = models.BoCExchangeRate.objects.filter(spider_time=BOC_dictionary.get('update_time'))
+    if same_spider_time:  # 多线程重复
+        return HttpResponse("Repeat")
     else:
-        message = "提交失败！反馈邮件程序错误"
-        return HttpResponse("fail")
+        new_rate = models.BoCExchangeRate(timestamp=timestamp, rate=BOC_dictionary.get('price'),
+                                          spider_time=BOC_dictionary.get('update_time'))
+        new_rate.save()
+        # 值1:邮件标题 值2：邮件主体 值3:发件人 值4：收件人
+
+        text = BOC_dictionary.get('price') + "\n" + timestamp + "\n"
+        res = send_mail('CAD:Rate',
+                        text,
+                        'buct_dongwu@163.com',
+                        ['rui.cai2020@outlook.com'])
+
+        if res == 1:
+            message = "提交成功！谢谢"
+            return HttpResponse("OK")
+        else:
+            message = "提交失败！反馈邮件程序错误"
+            return HttpResponse("fail")
