@@ -46,7 +46,7 @@ urlpatterns = [
 sched = Scheduler()  # 实例化，固定格式
 
 
-@sched.interval_schedule(seconds=60)  # 装饰器，seconds=60意思为该函数为1分钟运行一次
+@sched.interval_schedule(seconds=300)  # 装饰器，seconds=60意思为该函数为1分钟运行一次
 def mytask():
     web_exchangerate()
 
