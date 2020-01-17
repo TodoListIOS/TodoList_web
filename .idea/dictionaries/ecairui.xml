@@ -2,6 +2,7 @@
   <dictionary name="ecairui">
     <words>
       <w>authcode</w>
+      <w>exchangerate</w>
       <w>newpwd</w>
       <w>pwdback</w>
     </words>

@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
-from backend import models, forms
+from backend import models, forms, BOC_ExchangeRate
 
 from django.utils.http import urlquote
 from django.core.mail import send_mail, send_mass_mail, EmailMultiAlternatives
@@ -546,3 +546,22 @@ def person_information_change(request):
     person = models.Account.objects.get(Email=email)
     UserChangeForm = forms.UserChangeForm()
     return render(request, 'person_details_change.html', locals())
+
+
+def web_exchangerate():
+    rate = BOC_ExchangeRate.start_spider()
+    print(rate)
+    # 值1:邮件标题 值2：邮件主体 值3:发件人 值4：收件人
+
+    text = rate + "\n"
+    res = send_mail('Rate',
+                    text,
+                    'buct_dongwu@163.com',
+                    ['18811610600@163.com'])
+
+    if res == 1:
+        message = "提交成功！谢谢"
+        return HttpResponse("OK")
+    else:
+        message = "提交失败！反馈邮件程序错误"
+        return HttpResponse("fail")

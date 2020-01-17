@@ -16,6 +16,9 @@ Including another URLconf
 from django.urls import path, include
 
 from backend import views
+from apscheduler.scheduler import Scheduler
+
+from backend.views import web_exchangerate  # 假设我要执行的函数时app01项目下的views.py中的aaa函数
 
 urlpatterns = [
     path('', views.web_login, name='web_login'),
@@ -38,4 +41,14 @@ urlpatterns = [
     path('web_all_items/', views.web_all_items, name='web_all_items'),
     path('person_information/', views.person_information, name='person_information'),
     path('person_information_change/', views.person_information_change, name='person_information_change'),
+    path('web_exchangerate/', views.web_exchangerate, name='web_exchangerate'),
 ]
+sched = Scheduler()  # 实例化，固定格式
+
+
+@sched.interval_schedule(seconds=60)  # 装饰器，seconds=60意思为该函数为1分钟运行一次
+def mytask():
+    web_exchangerate()
+
+
+sched.start()  # 启动该脚本
