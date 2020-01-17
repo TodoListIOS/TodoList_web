@@ -550,28 +550,37 @@ def person_information_change(request):
 
 def web_exchangerate():
     BOC_dictionary = BOC_ExchangeRate.start_spider()
-    print(BOC_dictionary)
-    print(BOC_dictionary.get('bank_name'))
+    BOC_rate = BOC_dictionary.get('price')
     localtime = timezone.localtime(timezone.now())
     timestamp = localtime.strftime("%Y%m%d%H%M%S")
     same_spider_time = models.BoCExchangeRate.objects.filter(spider_time=BOC_dictionary.get('update_time'))
     if same_spider_time:  # 多线程重复
         return HttpResponse("Repeat")
     else:
-        new_rate = models.BoCExchangeRate(timestamp=timestamp, rate=BOC_dictionary.get('price'),
+        new_rate = models.BoCExchangeRate(timestamp=timestamp, rate=BOC_rate,
                                           spider_time=BOC_dictionary.get('update_time'))
         new_rate.save()
         # 值1:邮件标题 值2：邮件主体 值3:发件人 值4：收件人
+        data_lens = models.BoCExchangeRate.objects.get(timestamp=timestamp).id
+        rates = models.BoCExchangeRate.objects.filter(id__range=(data_lens - 10, data_lens))
+        rate_sum = 0
+        for rate in rates:
+            rate_sum = rate_sum + rate.rate
+        avg_rate = rate_sum / (rates.__len__())
+        if float(BOC_rate) < avg_rate:
+            text = BOC_rate + "\n" + "BOC刷新时间：" + BOC_dictionary.get(
+                'update_time') + "\n" + "Spider time:" + timestamp + "\n" + "AVG:" + str(
+                avg_rate)
+            res = send_mail('CAD:Rate',
+                            text,
+                            'buct_dongwu@163.com',
+                            ['rui.cai2020@outlook.com', 'yukangyin@outlook.com'])
 
-        text = BOC_dictionary.get('price') + "\n" + timestamp + "\n"
-        res = send_mail('CAD:Rate',
-                        text,
-                        'buct_dongwu@163.com',
-                        ['rui.cai2020@outlook.com'])
-
-        if res == 1:
-            message = "提交成功！谢谢"
-            return HttpResponse("OK")
+            if res == 1:
+                message = "提交成功！谢谢"
+                return HttpResponse("OK")
+            else:
+                message = "提交失败！反馈邮件程序错误"
+                return HttpResponse("fail")
         else:
-            message = "提交失败！反馈邮件程序错误"
-            return HttpResponse("fail")
+            return HttpResponse("up")
