@@ -557,7 +557,7 @@ def web_exchangerate():
     res = send_mail('Rate',
                     text,
                     'buct_dongwu@163.com',
-                    ['yukangyin@outlook.com', 'rui.cai2020@outlook.com'])
+                    ['rui.cai2020@outlook.com'])
 
     if res == 1:
         message = "提交成功！谢谢"
