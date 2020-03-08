@@ -43,12 +43,12 @@ urlpatterns = [
     path('person_information_change/', views.person_information_change, name='person_information_change'),
     path('web_exchangerate/', views.web_exchangerate, name='web_exchangerate'),
 ]
-# sched = Scheduler()  # 实例化，固定格式
-#
-#
-# @sched.interval_schedule(seconds=30)  # 装饰器，seconds=60意思为该函数为1分钟运行一次
-# def mytask():
-#     web_exchangerate()
-#
-#
-# sched.start()  # 启动该脚本
+sched = Scheduler()  # 实例化，固定格式
+
+
+@sched.interval_schedule(seconds=30)  # 装饰器，seconds=60意思为该函数为1分钟运行一次
+def mytask():
+    web_exchangerate()
+
+
+sched.start()  # 启动该脚本
