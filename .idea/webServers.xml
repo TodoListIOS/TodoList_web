@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="673a5d83-5b7b-47d8-b89c-d96ca8521b30" name="ruitsai.tech" url="http://ruitsai.tech">
-        <fileTransfer host="ruitsai.tech" port="22" rootFolder="/root" accessType="SFTP">
+        <fileTransfer host="ruitsai.tech" port="22" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
